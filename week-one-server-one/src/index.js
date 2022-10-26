@@ -9,7 +9,7 @@ const port = 3000
 app.use(express.static('public'))
 
 
-app.get('/', (req, res) => {
+app.get('/pug', (req, res) => {
     const rendered = renderWelcomePage({
         name: 'Viewer'
     })
@@ -26,6 +26,6 @@ app.get("/catinfo", (req, res) => {
 });
 
 app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`)
+    console.log(`Example app listening on port ${ port }`)
 })
 
