@@ -32,7 +32,7 @@ const createCatCards = (cats) => {
         // modify button
         const modButton = document.createElement('a');
         modButton.innerHTML = 'Modify';
-        modButton.href = `modify-cat.html?id=${cat.cat_id}`;
+        modButton.href = `modify-cat?id=${cat.cat_id}`;
         modButton.classList.add('button');
 
         // delete selected cat

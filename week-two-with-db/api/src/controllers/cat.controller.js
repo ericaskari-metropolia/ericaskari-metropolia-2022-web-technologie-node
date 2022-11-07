@@ -34,7 +34,8 @@ const save = async (req, res) => {
 
 const edit = async (req, res) => {
     const { cat_id } = req.body ?? {};
-    const cat = service.getCatById(cat_id ?? '');
+    console.log(req.body);
+    const cat = await service.getCatById(cat_id ?? '');
     if (cat) {
         await service.editCat(req.body ?? {});
         res.send(true);
