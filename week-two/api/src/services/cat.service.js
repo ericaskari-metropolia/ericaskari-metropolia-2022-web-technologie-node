@@ -2,9 +2,10 @@
 
 const catDb = require('../models/cat.model');
 
-const saveCat = (cat) => {
+const saveCat = (cat, file) => {
     catDb.cats.push({
         ...cat,
+        filename: file.filename,
         id: (catDb.cats.length + 1).toString() // based on data
     });
 

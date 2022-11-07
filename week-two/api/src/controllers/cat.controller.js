@@ -1,6 +1,7 @@
 'use strict';
 // catController
 const service = require('../services/cat.service');
+const multer = require('multer');
 
 const getList = (req, res) => {
     res.send(service.getCats());
@@ -19,8 +20,7 @@ const getById = (req, res) => {
 };
 
 const save = (req, res) => {
-    console.log(req.body);
-    res.send(service.saveCat(req.body));
+    res.send(service.saveCat(req.body, req.file));
 };
 
 const editById = (req, res) => {

@@ -2,7 +2,10 @@
 
 const express = require('express');
 const router = express.Router();
+const multer = require('multer');
+
 const controller = require('../controllers/cat.controller');
+const uploadService = require('../services/upload.service');
 
 /**
  * With this endpoint you can get cats.
@@ -17,7 +20,7 @@ router.get('/:id', controller.getById);
 /**
  * With this endpoint you can add cats.
  */
-router.post('/', controller.save);
+router.post('/', uploadService.imageUpload.single('cat'), controller.save);
 
 /**
  * With this endpoint you can edit cat by id.
