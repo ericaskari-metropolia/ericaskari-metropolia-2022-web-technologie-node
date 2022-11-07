@@ -2,15 +2,15 @@
 
 const service = require('../services/user.service');
 
-const getList = (req, res) => {
-    res.send(service.getUsers());
+const getList = async (req, res) => {
+    res.send(await service.getUsers());
 };
 
-const getById = (req, res) => {
+const getById = async (req, res) => {
     const catId = req.params['id'] ?? '';
-    const cat = service.getUserById(catId);
-    if (cat) {
-        res.send(cat);
+    const cat = await service.getUserById(catId);
+    if (cat && cat.length > 0) {
+        res.send(cat[0]);
     } else {
         res.status(404).send({
             error: 'not found'
@@ -18,21 +18,38 @@ const getById = (req, res) => {
     }
 };
 
-const save = (req, res) => {
-    res.send(service.saveUser(req.body));
+const save = async (req, res) => {
+    const { name, email, password } = req.body ?? {};
+    res.send(
+        await service.saveUser({
+            name,
+            email,
+            password,
+            role: 1
+        })
+    );
 };
 
-const editById = (req, res) => {
-    const catId = req.params['id'] ?? '';
-    res.send(service.editUser(catId, req.body));
-};
-
-const deleteById = (req, res) => {
-    const catId = req.params['id'] ?? '';
-    const cat = service.getUserById(catId);
+const edit = async (req, res) => {
+    const { user_id } = req.body ?? {};
+    console.log(req.body);
+    const cat = await service.getUsers(user_id ?? '');
     if (cat) {
-        service.deleteUserById(catId);
-        res.send(cat);
+        await service.editUser(req.body ?? {});
+        res.send(true);
+    } else {
+        res.status(404).send({
+            error: 'not found'
+        });
+    }
+};
+
+const deleteById = async (req, res) => {
+    const id = req.params['id'] ?? '';
+    const cat = service.getUserById(id);
+    if (cat) {
+        await service.deleteUserById(id);
+        res.send(true);
     } else {
         res.status(404).send({
             error: 'not found'
@@ -44,6 +61,6 @@ module.exports = {
     save: save,
     getList: getList,
     getById: getById,
-    editById: editById,
+    edit: edit,
     deleteById: deleteById
 };

@@ -19,14 +19,16 @@ const getById = async (req, res) => {
 };
 
 const save = async (req, res) => {
-    const { name, birthdate, weight, ownerId } = req.body ?? {};
+    const { name, birthdate, weight, owner } = req.body ?? {};
     const { filename: fileName } = req.file;
+    console.log(req.body);
+    console.log(req.file);
     res.send(
         await service.saveCat({
             name,
             birthdate,
             weight,
-            ownerId,
+            owner,
             fileName
         })
     );
@@ -46,11 +48,11 @@ const edit = async (req, res) => {
     }
 };
 
-const deleteById = (req, res) => {
+const deleteById = async (req, res) => {
     const catId = req.params['id'] ?? '';
     const cat = service.getCatById(catId);
     if (cat) {
-        service.deleteCatById(catId);
+        await service.deleteCatById(catId);
         res.send(true);
     } else {
         res.status(404).send({

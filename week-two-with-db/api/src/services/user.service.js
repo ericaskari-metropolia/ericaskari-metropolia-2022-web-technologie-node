@@ -1,59 +1,73 @@
 'use strict';
 
-const userDb = require('../models/user.model');
+const pool = require('../database');
+const promisePool = pool.promise();
 
-const saveUser = (user) => {
-    userDb.users.push({
-        ...user,
-        id: (userDb.users.length + 1).toString() // based on data
-    });
-
-    const savedUser = userDb.users[userDb.users.length - 1];
-    savedUser.password = '';
-    return savedUser;
-};
-const getUsers = () => {
-    return userDb.users.map((user) => {
-        return {
-            ...user,
-            password: ''
-        };
-    });
-};
-
-const getUserById = (id) => {
-    const user = userDb.users.find((x) => x && x.id === id);
-    if (user) {
-        user.password = '';
+const saveUser = async ({ name, email, password, role }) => {
+    try {
+        await promisePool.query('INSERT INTO `wop_user` (`name`, `email`, `password`, `role`) VALUES (?, ?, ?, ?)', [
+            name,
+            email,
+            password,
+            role
+        ]);
+    } catch (e) {
+        console.error('error', e.message);
     }
-    return user;
 };
 
-const editUser = (id, user) => {
-    const currentUserIndex = userDb.users.findIndex((x) => x && x.id === id);
-    if (currentUserIndex >= 0) {
-        //  Happening in memory.
-        userDb.users[currentUserIndex] = user;
-        return true;
+const getUsers = async () => {
+    try {
+        const [rows] = await promisePool.query('SELECT * from `wop_user`');
+        return rows;
+    } catch (e) {
+        console.error('error', e.message);
     }
-    return false;
 };
 
-const deleteUserById = (id) => {
-    const currentUserIndex = userDb.users.findIndex((x) => x && x.id === id);
-    if (currentUserIndex >= 0) {
-        //  Happening in memory.
-        userDb.users.splice(currentUserIndex, 1);
-        return true;
+const getUserById = async (id) => {
+    try {
+        const [rows] = await promisePool.query('SELECT * FROM wop_user WHERE user_id = ?', [id]);
+        return rows;
+    } catch (e) {
+        console.error('error', e.message);
     }
-    return false;
+};
+
+const editUser = async (user) => {
+    try {
+        const remoteUser = await getUserById(user?.user_id ?? '');
+        if (remoteUser) {
+            const { name, email, password, role, user_id } = {
+                ...remoteUser,
+                ...user
+            };
+            await promisePool.query('UPDATE `wop_user` SET name = ?, email = ?, password = ?, role = ? WHERE user_id = ?', [
+                name,
+                email,
+                password,
+                role,
+                user_id
+            ]);
+        }
+    } catch (e) {
+        console.error('error', e.message);
+    }
+};
+
+const deleteUserById = async (id) => {
+    try {
+        await promisePool.query('DELETE FROM `wop_user` WHERE user_id = ?', [id]);
+    } catch (e) {
+        console.error('error', e.message);
+    }
 };
 
 //  CRUD
 module.exports = {
-    saveUser,
-    getUsers,
-    getUserById,
-    editUser,
-    deleteUserById
+    saveUser: saveUser,
+    getUsers: getUsers,
+    getUserById: getUserById,
+    editUser: editUser,
+    deleteUserById: deleteUserById
 };

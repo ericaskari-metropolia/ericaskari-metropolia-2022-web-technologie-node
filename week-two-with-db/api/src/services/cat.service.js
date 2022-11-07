@@ -1,15 +1,14 @@
 'use strict';
 
-const catDb = require('../models/cat.model');
 const pool = require('../database');
 const promisePool = pool.promise();
 
-const saveCat = async ({ name, birthdate, weight, ownerId, fileName }) => {
+const saveCat = async ({ name, birthdate, weight, owner, fileName }) => {
     try {
         await promisePool.query('INSERT INTO `wop_cat` (`name`, `weight`, `owner`, `filename`, `birthdate`) VALUES (?, ?, ?, ?, ?)', [
             name,
             weight,
-            ownerId,
+            owner,
             fileName,
             birthdate
         ]);
@@ -42,15 +41,16 @@ const editCat = async (cat) => {
     try {
         const remoteCat = await getCatById(cat?.cat_id ?? '');
         if (remoteCat) {
-            const { name, weight, birthdate, filename, cat_id } = {
+            const { name, weight, birthdate, filename, cat_id, owner } = {
                 ...remoteCat,
                 ...cat
             };
-            await promisePool.query('UPDATE `wop_cat` SET name = ?, weight = ?, birthdate = ?, filename = ? WHERE cat_id = ?', [
+            await promisePool.query('UPDATE `wop_cat` SET name = ?, weight = ?, birthdate = ?, filename = ? , owner = ? WHERE cat_id = ?', [
                 name,
                 weight,
                 birthdate,
                 filename,
+                owner,
                 cat_id
             ]);
         }
@@ -59,14 +59,12 @@ const editCat = async (cat) => {
     }
 };
 
-const deleteCatById = (id) => {
-    const currentCatIndex = catDb.cats.findIndex((x) => x && x.id === id);
-    if (currentCatIndex >= 0) {
-        //  Happening in memory.
-        catDb.cats.splice(currentCatIndex, 1);
-        return true;
+const deleteCatById = async (id) => {
+    try {
+        await promisePool.query('DELETE FROM `wop_cat` WHERE cat_id = ?', [id]);
+    } catch (e) {
+        console.error('error', e.message);
     }
-    return false;
 };
 
 //  CRUD
