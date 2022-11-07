@@ -2,9 +2,9 @@
   "name": "server-one",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
-    "start": "npx nodemon --watch . --ext '*' --exec 'node src/index.js'"
+    "start": "nodemon --watch . --ext '*' --exec 'node src/index.js'"
   },
   "keywords": [],
   "author": "",
@@ -16,6 +16,7 @@
     "underscore": "^1.13.6"
   },
   "devDependencies": {
+    "nodemon": "^2.0.20",
     "prettier": "^2.7.1"
   }
 }

@@ -1,0 +1,29 @@
+{
+	"info": {
+		"_postman_id": "b1d60c76-ee95-474b-bed9-b7b198ca789b",
+		"name": "WeekTwo",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "3716736"
+	},
+	"item": [
+		{
+			"name": "GetCats",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/cat",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"cat"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
