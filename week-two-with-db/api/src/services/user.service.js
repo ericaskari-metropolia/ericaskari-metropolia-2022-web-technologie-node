@@ -3,7 +3,7 @@
 const pool = require('../database');
 const promisePool = pool.promise();
 
-const saveUser = async ({ name, email, password, role }) => {
+const save = async ({ name, email, password, role }) => {
     try {
         await promisePool.query('INSERT INTO `wop_user` (`name`, `email`, `password`, `role`) VALUES (?, ?, ?, ?)', [
             name,
@@ -16,7 +16,7 @@ const saveUser = async ({ name, email, password, role }) => {
     }
 };
 
-const getUsers = async () => {
+const getList = async () => {
     try {
         const [rows] = await promisePool.query('SELECT * from `wop_user`');
         return rows;
@@ -25,7 +25,7 @@ const getUsers = async () => {
     }
 };
 
-const getUserById = async (id) => {
+const getById = async (id) => {
     try {
         const [rows] = await promisePool.query('SELECT * FROM wop_user WHERE user_id = ?', [id]);
         return rows;
@@ -34,9 +34,9 @@ const getUserById = async (id) => {
     }
 };
 
-const editUser = async (user) => {
+const edit = async (user) => {
     try {
-        const remoteUser = await getUserById(user?.user_id ?? '');
+        const remoteUser = await getById(user?.user_id ?? '');
         if (remoteUser) {
             const { name, email, password, role, user_id } = {
                 ...remoteUser,
@@ -55,7 +55,7 @@ const editUser = async (user) => {
     }
 };
 
-const deleteUserById = async (id) => {
+const deleteById = async (id) => {
     try {
         await promisePool.query('DELETE FROM `wop_user` WHERE user_id = ?', [id]);
     } catch (e) {
@@ -65,9 +65,9 @@ const deleteUserById = async (id) => {
 
 //  CRUD
 module.exports = {
-    saveUser: saveUser,
-    getUsers: getUsers,
-    getUserById: getUserById,
-    editUser: editUser,
-    deleteUserById: deleteUserById
+    save,
+    getList,
+    getById,
+    edit,
+    deleteById
 };

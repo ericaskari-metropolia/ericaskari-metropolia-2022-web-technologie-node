@@ -3,7 +3,7 @@
 const express = require('express');
 const router = express.Router();
 
-const controller = require('../controllers/cat.controller');
+const controller = require('../controllers/cat.controller').instance();
 const uploadService = require('../services/upload.service');
 
 router.route('/').get(controller.getList).post(uploadService.imageUpload.single('cat'), controller.save).put(controller.edit);

@@ -3,8 +3,7 @@
 const express = require('express');
 const router = express.Router();
 
-const controller = require('../controllers/user.controller');
-const uploadService = require('../services/upload.service');
+const controller = require('../controllers/user.controller').instance();
 
 router.route('/').get(controller.getList).post(controller.save).put(controller.edit);
 

@@ -3,7 +3,7 @@
 const pool = require('../database');
 const promisePool = pool.promise();
 
-const saveCat = async ({ name, birthdate, weight, owner, fileName }) => {
+const save = async ({ name, birthdate, weight, owner, fileName }) => {
     try {
         await promisePool.query('INSERT INTO `wop_cat` (`name`, `weight`, `owner`, `filename`, `birthdate`) VALUES (?, ?, ?, ?, ?)', [
             name,
@@ -17,7 +17,7 @@ const saveCat = async ({ name, birthdate, weight, owner, fileName }) => {
     }
 };
 
-const getCats = async () => {
+const getList = async () => {
     try {
         const [rows] = await promisePool.query(
             'SELECT cat_id, filename, wop_cat.name as name, birthdate, weight, wu.name as ownername from wop_cat LEFT JOIN wop_user wu on wu.user_id = wop_cat.owner'
@@ -28,7 +28,7 @@ const getCats = async () => {
     }
 };
 
-const getCatById = async (id) => {
+const getById = async (id) => {
     try {
         const [rows] = await promisePool.query('SELECT * FROM wop_cat WHERE cat_id = ?', [id]);
         return rows;
@@ -37,9 +37,9 @@ const getCatById = async (id) => {
     }
 };
 
-const editCat = async (cat) => {
+const edit = async (cat) => {
     try {
-        const remoteCat = await getCatById(cat?.cat_id ?? '');
+        const remoteCat = await getById(cat?.cat_id ?? '');
         if (remoteCat) {
             const { name, weight, birthdate, filename, cat_id, owner } = {
                 ...remoteCat,
@@ -59,7 +59,7 @@ const editCat = async (cat) => {
     }
 };
 
-const deleteCatById = async (id) => {
+const deleteById = async (id) => {
     try {
         await promisePool.query('DELETE FROM `wop_cat` WHERE cat_id = ?', [id]);
     } catch (e) {
@@ -69,9 +69,9 @@ const deleteCatById = async (id) => {
 
 //  CRUD
 module.exports = {
-    saveCat: saveCat,
-    getCats: getCats,
-    getCatById: getCatById,
-    editCat: editCat,
-    deleteCatById: deleteCatById
+    save,
+    getList,
+    getById,
+    edit,
+    deleteById
 };

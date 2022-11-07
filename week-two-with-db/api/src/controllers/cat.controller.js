@@ -1,70 +1,83 @@
 'use strict';
 // catController
-const service = require('../services/cat.service');
+const defaultCatService = require('../services/cat.service');
 
-const getList = async (req, res) => {
-    res.send(await service.getCats());
-};
+class CatController {
+    static _instance;
 
-const getById = async (req, res) => {
-    const catId = req.params['id'] ?? '';
-    const cat = await service.getCatById(catId);
-    if (cat && cat.length > 0) {
-        res.send(cat[0]);
-    } else {
-        res.status(404).send({
-            error: 'not found'
-        });
+    catService;
+
+    constructor(catService) {
+        this.catService = catService;
     }
-};
 
-const save = async (req, res) => {
-    const { name, birthdate, weight, owner } = req.body ?? {};
-    const { filename: fileName } = req.file;
-    console.log(req.body);
-    console.log(req.file);
-    res.send(
-        await service.saveCat({
-            name,
-            birthdate,
-            weight,
-            owner,
-            fileName
-        })
-    );
-};
+    static instance(catService = defaultCatService) {
+        if (this._instance) {
+            return this._instance;
+        }
 
-const edit = async (req, res) => {
-    const { cat_id } = req.body ?? {};
-    console.log(req.body);
-    const cat = await service.getCatById(cat_id ?? '');
-    if (cat) {
-        await service.editCat(req.body ?? {});
-        res.send(true);
-    } else {
-        res.status(404).send({
-            error: 'not found'
-        });
+        this._instance = new CatController(catService);
+        return this._instance;
     }
-};
 
-const deleteById = async (req, res) => {
-    const catId = req.params['id'] ?? '';
-    const cat = service.getCatById(catId);
-    if (cat) {
-        await service.deleteCatById(catId);
-        res.send(true);
-    } else {
-        res.status(404).send({
-            error: 'not found'
-        });
-    }
-};
+    getList = async (req, res) => {
+        res.send(await this.catService.getList());
+    };
 
-module.exports = {
-    save: save,
-    getList: getList,
-    getById: getById,
-    edit: edit,
-    deleteById: deleteById
-};
+    getById = async (req, res) => {
+        const catId = req.params['id'] ?? '';
+        const cat = await this.catService.getById(catId);
+        if (cat && cat.length > 0) {
+            res.send(cat[0]);
+        } else {
+            res.status(404).send({
+                error: 'not found'
+            });
+        }
+    };
+
+    save = async (req, res) => {
+        const { name, birthdate, weight, owner } = req.body ?? {};
+        const { filename: fileName } = req.file;
+        console.log(req.body);
+        console.log(req.file);
+        res.send(
+            await this.catService.save({
+                name,
+                birthdate,
+                weight,
+                owner,
+                fileName
+            })
+        );
+    };
+
+    edit = async (req, res) => {
+        const { cat_id: id } = req.body ?? {};
+        console.log(req.body);
+        const cat = await this.catService.getById(id ?? '');
+        if (cat) {
+            await this.catService.edit(req.body ?? {});
+            res.send(true);
+        } else {
+            res.status(404).send({
+                error: 'not found'
+            });
+        }
+    };
+
+    deleteById = async (req, res) => {
+        const catId = req.params['id'] ?? '';
+        const cat = this.catService.getById(catId);
+        if (cat) {
+            await this.catService.deleteById(catId);
+            res.send(true);
+        } else {
+            res.status(404).send({
+                error: 'not found'
+            });
+        }
+    };
+}
+
+module.exports = CatController;
