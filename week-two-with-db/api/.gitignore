@@ -6,3 +6,4 @@ uploads/*
 !uploads/.gitkeep
 !uploads/300.jpeg
 !uploads/302.jpeg
+!uploads/304.jpeg
