@@ -7,8 +7,8 @@ on:
 jobs:
   EricDeployment:
     runs-on: ubuntu-20.04
-    name: EricDeployment
-    environment: deployment-eric
+    name: Metropolia
+    environment: Metropolia
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -25,7 +25,7 @@ jobs:
       #      - name: Build Project
       #        run: npm run build
 
-      - name: Deploy
+      - name: Deploy week-two
         run: |
           sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USERNAME }}@edunix.metropolia.fi "mkdir -p ~/public_html/2022-web-technologies-node/ui"
           sshpass -p "${{ secrets.SSH_PASSWORD }}" rsync -e "ssh -o StrictHostKeyChecking=no" -a --progress --delete ./week-two/ui/ ${{ secrets.SSH_USERNAME }}@edunix.metropolia.fi:~/public_html/2022-web-technologies-node/ui
