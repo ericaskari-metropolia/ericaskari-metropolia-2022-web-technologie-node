@@ -1,6 +1,6 @@
 'use strict';
 
-const userDb = require('../models/userModel');
+const userDb = require('../models/user.model');
 
 const saveUser = (user) => {
     userDb.users.push({

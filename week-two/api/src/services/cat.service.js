@@ -1,6 +1,6 @@
 'use strict';
 
-const catDb = require('../models/catModel');
+const catDb = require('../models/cat.model');
 
 const saveCat = (cat) => {
     catDb.cats.push({

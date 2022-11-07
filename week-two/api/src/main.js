@@ -1,12 +1,16 @@
 'use strict';
 const express = require('express');
-const cats = require('./routes/catRoute');
-const users = require('./routes/userRoute');
+const cors = require('cors');
+
+const cats = require('./routes/cat.route');
+const users = require('./routes/user.route');
+
 const app = express();
 const port = 3000;
 
+app.use(cors());
+
 app.use(express.json()); // Used to parse JSON bodies
-app.use(express.urlencoded()); // Parse URL-encoded bodies using query-string library
 
 app.use('/cat', cats);
 app.use('/user', users);
