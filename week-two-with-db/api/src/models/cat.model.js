@@ -14,16 +14,6 @@ const getAllCats = async () => {
     }
 };
 
-const saveCat = async ({ name, birthdate, weight, ownerId, fileName }) => {
-    try {
-        // TODO: do the LEFT (or INNER) JOIN to get owner's name as ownername (from wop_user table).
-        const [rows] = await promisePool.s('SELECT * FROM wop_cat');
-        return rows;
-    } catch (e) {
-        console.error('error', e.message);
-    }
-};
-
 const cats = [
     {
         id: '1',
@@ -44,6 +34,5 @@ const cats = [
 ];
 
 module.exports = {
-    cats,
-    getAllCats
+    cats
 };

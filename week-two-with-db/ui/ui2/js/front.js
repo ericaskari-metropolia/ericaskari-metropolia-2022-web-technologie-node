@@ -21,7 +21,7 @@ const createCatCards = (cats) => {
         h2.innerHTML = cat.name;
 
         const p1 = document.createElement('p');
-        p1.innerHTML = `Birthdate: ${cat.birthdate}`;
+        p1.innerHTML = `Birthdate: ${new Date(cat.birthdate).toDateString()}`;
 
         const p2 = document.createElement('p');
         p2.innerHTML = `Weight: ${cat.weight}kg`;

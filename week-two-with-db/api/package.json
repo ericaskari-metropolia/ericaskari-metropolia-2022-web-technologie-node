@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "NODE_ENV=development nodemon --watch . --ext '*' --exec 'node src/main.js'",
+    "start": "NODE_ENV=development nodemon --watch src --ext '*' --exec 'node src/main.js'",
     "start:ui": "npx serve -p 3001 ../ui"
   },
   "author": "",

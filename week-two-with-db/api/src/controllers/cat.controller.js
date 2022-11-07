@@ -18,15 +18,25 @@ const getById = async (req, res) => {
     }
 };
 
-const save = (req, res) => {
-    res.send(service.saveCat(req.body, req.file));
+const save = async (req, res) => {
+    const { name, birthdate, weight, ownerId } = req.body ?? {};
+    const { filename: fileName } = req.file;
+    res.send(
+        await service.saveCat({
+            name,
+            birthdate,
+            weight,
+            ownerId,
+            fileName
+        })
+    );
 };
 
-const editById = (req, res) => {
-    const catId = req.params['id'] ?? '';
-    const cat = service.getCatById(catId);
+const edit = async (req, res) => {
+    const { cat_id } = req.body ?? {};
+    const cat = service.getCatById(cat_id ?? '');
     if (cat) {
-        service.editCat(catId, req.body);
+        await service.editCat(req.body ?? {});
         res.send(true);
     } else {
         res.status(404).send({
@@ -52,6 +62,6 @@ module.exports = {
     save: save,
     getList: getList,
     getById: getById,
-    editById: editById,
+    edit: edit,
     deleteById: deleteById
 };

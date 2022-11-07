@@ -1,7 +1,7 @@
 USE `eric-db`;
 
 CREATE TABLE `wop_cat` (
-  `cat_id` int(11) NOT NULL,
+  `cat_id` int(11) NOT NULL ,
   `name` text NOT NULL,
   `weight` float NOT NULL,
   `owner` int(11) NOT NULL,
