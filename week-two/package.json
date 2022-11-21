@@ -4,8 +4,9 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon --watch . --ext '*' --exec 'node src/main.js'",
-    "start:ui": "npx serve ../ui"
+    "start": "concurrently \"npm:start:api\" \"npm:start:ui\"",
+    "start:api": "nodemon --watch src --ext '*' --exec 'node src/main.js'",
+    "start:ui": "npx serve -p 3001 public/ui/ui2/"
   },
   "author": "",
   "license": "ISC",
@@ -15,7 +16,8 @@
     "multer": "^1.4.5-lts.1"
   },
   "devDependencies": {
-    "nodemon": "^2.0.20",
-    "@types/multer": "^1.4.7"
+    "@types/multer": "^1.4.7",
+    "concurrently": "^7.6.0",
+    "nodemon": "^2.0.20"
   }
 }
