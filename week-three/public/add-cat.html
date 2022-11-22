@@ -41,6 +41,7 @@
                             required
                             type="text"
                         />
+                        <span aria-live="text-red-500" class="error"></span>
                     </div>
 
                     <div>
@@ -56,6 +57,7 @@
                             required
                             type="date"
                         />
+                        <span aria-live="text-red-500" class="error"></span>
                     </div>
 
                     <div>
@@ -73,35 +75,38 @@
                             step="0.1"
                             type="number"
                         />
+                        <span aria-live="text-red-500" class="error"></span>
                     </div>
 
                     <div>
-                        <label for="owner"
+                        <label for="ownerId"
                             >Owner <span aria-label="required">*</span></label
                         >
                         <select
                             class="light-border invalid:border-red-500 valid:border-green-500 add-owner"
-                            id="owner"
-                            name="owner"
+                            id="ownerId"
+                            name="ownerId"
                             required
                         >
                             <option value="">Select owner</option>
                         </select>
+                        <span aria-live="text-red-500" class="error"></span>
                     </div>
 
                     <div>
-                        <label for="image"
+                        <label for="singleImage"
                             >Image <span aria-label="required">*</span></label
                         >
                         <input
                             accept="image/*"
                             class="light-border invalid:border-red-500 valid:border-green-500"
-                            id="image"
-                            name="cat"
+                            id="singleImage"
+                            name="singleImage"
                             placeholder="Choose file"
                             required
                             type="file"
                         />
+                        <span aria-live="text-red-500" class="error"></span>
                     </div>
 
                     <button

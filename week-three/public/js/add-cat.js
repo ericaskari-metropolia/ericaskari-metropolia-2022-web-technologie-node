@@ -8,8 +8,8 @@ window.addEventListener('load', () => {
         name: form.querySelector(`input[name='name']`),
         birthdate: form.querySelector(`input[name='birthdate']`),
         weight: form.querySelector(`input[name='weight']`),
-        owner: form.querySelector(`select[name='owner']`),
-        cat: form.querySelector(`input[name='cat']`)
+        ownerId: form.querySelector(`select[name='ownerId']`),
+        singleImage: form.querySelector(`input[name='singleImage']`)
     };
 
     // create user options to <select>
@@ -20,7 +20,7 @@ window.addEventListener('load', () => {
         users.forEach((user) => {
             // create options with DOM methods
             const option = document.createElement('option');
-            option.value = user.user_id;
+            option.value = user.id;
             option.innerText = user.name;
             option.classList.add('light-border');
             userList.appendChild(option);
@@ -47,19 +47,21 @@ window.addEventListener('load', () => {
             body: new FormData(form)
         };
         const response = await fetch(url + '/cat', fetchOptions);
-        const json = await response.json();
-        alert(json.message);
-        location.href = 'front.html';
-    });
 
-    for (let input of Object.values(formFields)) {
-        input.addEventListener('input', (event) => {
-            console.log(formFields.name.validity);
-            if (formFields.name.validity.typeMismatch) {
-                formFields.name.reportValidity();
-            } else {
-                formFields.name.setCustomValidity('');
+        if (response.status === 200) {
+            const json = await response.json();
+            alert(json.message);
+            location.href = 'front.html';
+        }
+        if (response.status === 400) {
+            const json = await response.json();
+            const { errors = [] } = json ?? {};
+            for (let { msg, param, location } of errors) {
+                if (formFields[param]) {
+                    formFields[param].nextElementSibling.textContent = msg;
+                }
             }
-        });
-    }
+            console.log(json);
+        }
+    });
 });

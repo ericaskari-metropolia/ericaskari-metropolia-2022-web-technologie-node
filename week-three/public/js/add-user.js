@@ -14,26 +14,31 @@ window.addEventListener('load', () => {
     // submit add user form
     form.addEventListener('submit', async (evt) => {
         evt.preventDefault();
-        formFields.email.className = [
-            formFields.email.className,
-            'invalid'
-        ].join(' ');
-        formFields.email.nextElementSibling.textContent =
-            'I expect an e-mail, darling!';
-        formFields.email.nextElementSibling.className = 'error active';
 
-        // const data = serializeJson(addUserForm);
-        // const fetchOptions = {
-        //     method: 'POST',
-        //     headers: {
-        //         'Content-Type': 'application/json'
-        //     },
-        //     body: JSON.stringify(data) // body data type must match "Content-Type" header
-        // };
-        //
-        // const response = await fetch(url + '/user', fetchOptions);
-        // const json = await response.json();
-        // alert(json.message);
-        // location.href = 'front.html';
+        const data = serializeJson(addUserForm);
+        const fetchOptions = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data) // body data type must match "Content-Type" header
+        };
+
+        const response = await fetch(url + '/user', fetchOptions);
+        if (response.status === 200) {
+            const json = await response.json();
+            alert(json.message);
+            location.href = 'front.html';
+        }
+        if (response.status === 400) {
+            const json = await response.json();
+            const { errors = [] } = json ?? {};
+            for (let { msg, param, location } of errors) {
+                if (formFields[param]) {
+                    formFields[param].nextElementSibling.textContent = msg;
+                }
+            }
+            console.log(json);
+        }
     });
 });

@@ -27,7 +27,7 @@
                     id="modCatForm"
                     method="post"
                 >
-                    <h3 class="text-lg">Add cat</h3>
+                    <h3 class="text-lg">Edit cat</h3>
                     <hr />
                     <div>
                         <label for="name"
@@ -76,20 +76,20 @@
                     </div>
 
                     <div>
-                        <label for="owner"
+                        <label for="ownerId"
                             >Owner <span aria-label="required">*</span></label
                         >
                         <select
                             class="light-border invalid:border-red-500 valid:border-green-500 add-owner"
-                            id="owner"
-                            name="owner"
+                            id="ownerId"
+                            name="ownerId"
                             required
                         >
                             <option value="">Select owner</option>
                         </select>
                     </div>
-                    <input name="cat_id" type="hidden" />
-                    <input name="filename" type="hidden" />
+                    <input name="id" type="hidden" />
+                    <input name="fileName" type="hidden" />
                     <button
                         class="light-border invalid:border-red-500 valid:border-green-500"
                         type="submit"

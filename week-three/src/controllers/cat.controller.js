@@ -1,15 +1,26 @@
 'use strict';
 const catService = require('../services/cat.service');
+const { validationResult } = require('express-validator');
 
 const getList = async (req, res) => {
     res.send(await catService.getList());
 };
 
 const getById = async (req, res) => {
+    {
+        const errors = validationResult(req);
+        console.log({ errors });
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
+    }
+
     const catId = req.params['id'] ?? '';
+    console.log(catId);
     const cat = await catService.getById(catId);
-    if (cat && cat.length > 0) {
-        res.send(cat[0]);
+    console.log(cat);
+    if (cat) {
+        res.send(cat);
     } else {
         res.status(404).send({
             error: 'not found'
@@ -18,26 +29,42 @@ const getById = async (req, res) => {
 };
 
 const save = async (req, res) => {
-    const { name, birthdate, weight, owner } = req.body ?? {};
+    {
+        const errors = validationResult(req);
+        console.log({ errors });
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
+    }
+
+    const { name, birthdate, weight, ownerId } = req.body ?? {};
     const { filename: fileName } = req.file ?? {};
+
     console.log(req.body);
     console.log(req.file);
     await catService.save({
-        name,
-        birthdate,
-        weight,
-        owner,
-        fileName
+        name: name,
+        weight: weight,
+        fileName: fileName,
+        birthdate: birthdate,
+        ownerId: ownerId
     });
     res.send({ message: 'Cat Saved!' });
 };
 
 const edit = async (req, res) => {
-    const { cat_id: id } = req.body ?? {};
-    console.log(req.body);
+    {
+        const errors = validationResult(req);
+        console.log({ errors });
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
+    }
+
+    const { id, name, birthdate, weight, ownerId } = req.body ?? {};
     const cat = await catService.getById(id ?? '');
     if (cat) {
-        await catService.edit(req.body ?? {});
+        await catService.edit({ id, name, weight, ownerId, birthdate });
         res.send(true);
     } else {
         res.status(404).send({
@@ -47,6 +74,14 @@ const edit = async (req, res) => {
 };
 
 const deleteById = async (req, res) => {
+    {
+        const errors = validationResult(req);
+        console.log({ errors });
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
+    }
+
     const catId = req.params['id'] ?? '';
     const cat = catService.getById(catId);
     if (cat) {
@@ -60,9 +95,9 @@ const deleteById = async (req, res) => {
 };
 
 module.exports = {
-    getList,
-    getById,
-    save,
-    edit,
-    deleteById
+    getList: getList,
+    getById: getById,
+    save: save,
+    edit: edit,
+    deleteById: deleteById
 };
