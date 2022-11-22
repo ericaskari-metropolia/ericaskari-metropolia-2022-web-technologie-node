@@ -25,10 +25,10 @@ ul {
   flex-wrap: nowrap;
 }
 
-li {
-  width: 30%;
-  margin: 0.5em;
-}
+/*li {*/
+/*  width: 30%;*/
+/*  margin: 0.5em;*/
+/*}*/
 
 figure {
   margin: 0;

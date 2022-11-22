@@ -20,7 +20,7 @@ const getById = async (req, res) => {
 
 const save = async (req, res) => {
     const { name, birthdate, weight, owner } = req.body ?? {};
-    const { filename: fileName } = req.file;
+    const { filename: fileName } = req.file ?? {};
     console.log(req.body);
     console.log(req.file);
     res.send(

@@ -4,28 +4,60 @@
         <meta charset="utf8" />
         <title>Example</title>
         <link href="./css/ui2.css" rel="stylesheet" />
+        <script src="https://cdn.tailwindcss.com"></script>
     </head>
 
     <body>
         <div class="container">
             <nav>
-                <ul>
+                <ul class="grid grid-cols-4 gap-2 p-2">
                     <li><a href="front.html">Frontpage</a></li>
                     <li><a href="add-user.html">Add user</a></li>
                     <li><a href="add-cat.html">Add cat</a></li>
                 </ul>
             </nav>
             <hr />
-            <div class="forms">
-                <div class="form-wrapper">
+            <div class="max-w-md mx-auto">
+                <form action="http://localhost:3000/user" class="grid grid-cols-1 gap-4 p-2" id="addUserForm" method="post" novalidate>
                     <h3>Add user</h3>
-                    <form action="http://localhost:3000/user" method="post" class="light-border" id="addUserForm">
-                        <input class="light-border" type="text" name="name" placeholder="Name" />
-                        <input class="light-border" type="text" name="email" placeholder="email" />
-                        <input class="light-border" type="text" name="password" placeholder="Password" />
-                        <button class="light-border" type="submit">Save</button>
-                    </form>
-                </div>
+
+                    <div>
+                        <label for="name">Name <span aria-label="required">*</span></label>
+                        <input
+                            class="light-border invalid:border-red-500 valid:border-green-500"
+                            id="name"
+                            name="name"
+                            placeholder="Name"
+                            required
+                            type="text"
+                        />
+                    </div>
+
+                    <div>
+                        <label for="email">Email <span aria-label="required">*</span></label>
+                        <input
+                            class="light-border invalid:border-red-500 valid:border-green-500"
+                            id="email"
+                            name="email"
+                            placeholder="Email"
+                            required
+                            type="email"
+                        />
+                    </div>
+
+                    <div>
+                        <label for="password">Password <span aria-label="required">*</span></label>
+                        <input
+                            class="light-border invalid:border-red-500 valid:border-green-500"
+                            id="password"
+                            name="password"
+                            placeholder="Password"
+                            required
+                            type="text"
+                        />
+                    </div>
+                    <button class="light-border" type="submit">Save</button>
+                </form>
             </div>
         </div>
         <script src="./js/serialize.js"></script>
