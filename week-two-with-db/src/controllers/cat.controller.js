@@ -1,83 +1,68 @@
 'use strict';
-// catController
-const defaultCatService = require('../services/cat.service');
+const catService = require('../services/cat.service');
 
-class CatController {
-    static _instance;
+const getList = async (req, res) => {
+    res.send(await catService.getList());
+};
 
-    catService;
-
-    constructor(catService) {
-        this.catService = catService;
+const getById = async (req, res) => {
+    const catId = req.params['id'] ?? '';
+    const cat = await catService.getById(catId);
+    if (cat && cat.length > 0) {
+        res.send(cat[0]);
+    } else {
+        res.status(404).send({
+            error: 'not found'
+        });
     }
+};
 
-    static instance(catService = defaultCatService) {
-        if (this._instance) {
-            return this._instance;
-        }
+const save = async (req, res) => {
+    const { name, birthdate, weight, owner } = req.body ?? {};
+    const { filename: fileName } = req.file;
+    console.log(req.body);
+    console.log(req.file);
+    await catService.save({
+        name,
+        birthdate,
+        weight,
+        owner,
+        fileName
+    });
+    res.send({ message: 'Cat Saved!' });
+};
 
-        this._instance = new CatController(catService);
-        return this._instance;
+const edit = async (req, res) => {
+    const { cat_id: id } = req.body ?? {};
+    console.log(req.body);
+    const cat = await catService.getById(id ?? '');
+    if (cat) {
+        await catService.edit(req.body ?? {});
+        res.send(true);
+    } else {
+        res.status(404).send({
+            error: 'not found'
+        });
     }
+};
 
-    getList = async (req, res) => {
-        res.send(await this.catService.getList());
-    };
+const deleteById = async (req, res) => {
+    const catId = req.params['id'] ?? '';
+    const cat = catService.getById(catId);
+    if (cat) {
+        await catService.deleteById(catId);
+        res.send(true);
+    } else {
+        res.status(404).send({
+            error: 'not found'
+        });
+    }
+};
 
-    getById = async (req, res) => {
-        const catId = req.params['id'] ?? '';
-        const cat = await this.catService.getById(catId);
-        if (cat && cat.length > 0) {
-            res.send(cat[0]);
-        } else {
-            res.status(404).send({
-                error: 'not found'
-            });
-        }
-    };
-
-    save = async (req, res) => {
-        const { name, birthdate, weight, owner } = req.body ?? {};
-        const { filename: fileName } = req.file;
-        console.log(req.body);
-        console.log(req.file);
-        res.send(
-            await this.catService.save({
-                name,
-                birthdate,
-                weight,
-                owner,
-                fileName
-            })
-        );
-    };
-
-    edit = async (req, res) => {
-        const { cat_id: id } = req.body ?? {};
-        console.log(req.body);
-        const cat = await this.catService.getById(id ?? '');
-        if (cat) {
-            await this.catService.edit(req.body ?? {});
-            res.send(true);
-        } else {
-            res.status(404).send({
-                error: 'not found'
-            });
-        }
-    };
-
-    deleteById = async (req, res) => {
-        const catId = req.params['id'] ?? '';
-        const cat = this.catService.getById(catId);
-        if (cat) {
-            await this.catService.deleteById(catId);
-            res.send(true);
-        } else {
-            res.status(404).send({
-                error: 'not found'
-            });
-        }
-    };
-}
-
-module.exports = CatController;
+module.exports = {
+    getList,
+    getById,
+    save,
+    edit,
+    deleteById
+};

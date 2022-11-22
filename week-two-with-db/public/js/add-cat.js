@@ -9,11 +9,12 @@ const userList = document.querySelector('.add-owner');
 const createUserOptions = (users) => {
     // clear user list
     userList.innerHTML = '';
+    console.log(users);
     users.forEach((user) => {
         // create options with DOM methods
         const option = document.createElement('option');
-        option.value = user.id;
-        option.innerHTML = user.name;
+        option.value = user.user_id;
+        option.innerText = user.name;
         option.classList.add('light-border');
         userList.appendChild(option);
     });
@@ -34,10 +35,9 @@ getUsers();
 // submit add cat form
 addForm.addEventListener('submit', async (evt) => {
     evt.preventDefault();
-    const fd = new FormData(addForm);
     const fetchOptions = {
         method: 'POST',
-        body: fd
+        body: new FormData(addForm)
     };
     const response = await fetch(url + '/cat', fetchOptions);
     const json = await response.json();

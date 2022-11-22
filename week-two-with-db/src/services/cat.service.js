@@ -3,6 +3,7 @@
 const { db } = require('../database');
 
 const save = async ({ name, birthdate, weight, owner, fileName }) => {
+    console.log({ name, birthdate, weight, owner, fileName });
     await db.query('INSERT INTO `wop_cat` (`name`, `weight`, `owner`, `filename`, `birthdate`) VALUES (?, ?, ?, ?, ?)', [
         name,
         weight,

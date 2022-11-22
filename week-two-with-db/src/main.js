@@ -15,18 +15,25 @@ async function start() {
     await runMigrations(db);
 
     app.use(cors());
-    app.use(morgan('combined'));
+    app.use(morgan('tiny'));
 
     app.use(express.json()); // Used to parse JSON bodies
 
     app.use('/cat', cats);
     app.use('/user', users);
     app.use('/images', images);
+    app.use((err, req, res, next) => {
+        if (res.headersSent) {
+            return next(err);
+        }
+        res.status(500);
+        res.render('error', { error: err });
+    });
 
     app.listen(port, () => {
         console.log(`Api Running on port ${port}!`);
         console.log(`Web Running on port 3001!`);
-        console.log(`Open http://localhost:3001/`);
+        console.log(`Open http://localhost:3001/front.html`);
     });
 }
 
