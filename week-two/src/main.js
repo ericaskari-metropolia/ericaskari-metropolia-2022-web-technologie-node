@@ -18,7 +18,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/cat', cats);
 app.use('/user', users);
 app.use('/images', images);
-app.use('/', (req, res, next) => res.status(404).send({ message: 'Nothing here!' }));
+app.use('/', (req, res, next) =>
+    res.status(404).send({ message: 'Nothing here!' })
+);
 
 app.listen(port, () => {
     console.log(`Api Running on port ${port}!`);

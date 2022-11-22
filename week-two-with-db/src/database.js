@@ -17,7 +17,9 @@ const pool = mysql.createPool({
 });
 
 const createMigrationsTable = async (db) => {
-    await db.query('CREATE TABLE migrations ( name int NOT NULL PRIMARY KEY, date bigint NOT NULL);');
+    await db.query(
+        'CREATE TABLE migrations ( name int NOT NULL PRIMARY KEY, date bigint NOT NULL);'
+    );
 };
 
 const getCurrentMigrations = async (db) => {
@@ -63,8 +65,11 @@ const runMigrations = async (db) => {
         }
     }
     {
-        const currentMigrations = (await getCurrentMigrations(db)).sort((a, b) => a.name - b.name);
-        const parseFileName = (file) => Number.parseInt(path.parse(file.name).name);
+        const currentMigrations = (await getCurrentMigrations(db)).sort(
+            (a, b) => a.name - b.name
+        );
+        const parseFileName = (file) =>
+            Number.parseInt(path.parse(file.name).name);
 
         const migrationFiles = fs
             .readdirSync('migrations', { withFileTypes: true })
@@ -80,21 +85,35 @@ const runMigrations = async (db) => {
                 return parseFileName(a) - parseFileName(b);
             });
 
-        const missingMigrationFiles = currentMigrations.filter((x) => !migrationFiles.find((y) => parseFileName(y) === x.name));
-        const pendingMigrations = migrationFiles.filter((x) => !currentMigrations.find((y) => parseFileName(x) === y.name));
+        const missingMigrationFiles = currentMigrations.filter(
+            (x) => !migrationFiles.find((y) => parseFileName(y) === x.name)
+        );
+        const pendingMigrations = migrationFiles.filter(
+            (x) => !currentMigrations.find((y) => parseFileName(x) === y.name)
+        );
 
         if (missingMigrationFiles.length > 0) {
-            throw new Error(`MISSING MIGRATION FILE : ${missingMigrationFiles.map((x) => x.name).join(', ')}`);
+            throw new Error(
+                `MISSING MIGRATION FILE : ${missingMigrationFiles
+                    .map((x) => x.name)
+                    .join(', ')}`
+            );
         }
         if (pendingMigrations.length > 0) {
             for (let pendingMigration of pendingMigrations) {
                 console.log(`Running Migration: ${pendingMigration.name}`);
-                const migrationQuery = fs.readFileSync(path.resolve('migrations', pendingMigration.name)).toString();
+                const migrationQuery = fs
+                    .readFileSync(
+                        path.resolve('migrations', pendingMigration.name)
+                    )
+                    .toString();
 
                 await runInTransaction(db, async (conn) => {
                     await conn.query(migrationQuery);
                     await conn.query(`INSERT INTO migrations (name, date)
-                                      VALUES (${parseFileName(pendingMigration)}, ${Date.now()});`);
+                                      VALUES (${parseFileName(
+                                          pendingMigration
+                                      )}, ${Date.now()});`);
                 });
             }
         } else {

@@ -1,6 +1,7 @@
-## Week1 
+## Week1
 
 ### Server one:
+
 Node version: v16.16.0
 
     cd week-one-server-one

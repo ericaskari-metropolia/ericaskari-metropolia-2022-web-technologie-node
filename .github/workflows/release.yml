@@ -1,31 +1,31 @@
 name: Deploy to accounts
 
 on:
-  push:
-    branches:
-      - main
+    push:
+        branches:
+            - main
 jobs:
-  EricDeployment:
-    runs-on: ubuntu-20.04
-    name: Metropolia
-    environment: Metropolia
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      #
-      #      - name: Setup Node
-      #        uses: actions/setup-node@v2
-      #        with:
-      #          node-version: 'v14.18.1'
-      #          cache: 'npm'
-      #
-      #      - name: InstallDependencies
-      #        run: npm install
-      #
-      #      - name: Build Project
-      #        run: npm run build
+    EricDeployment:
+        runs-on: ubuntu-20.04
+        name: Metropolia
+        environment: Metropolia
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v2
+            #
+            #      - name: Setup Node
+            #        uses: actions/setup-node@v2
+            #        with:
+            #          node-version: 'v14.18.1'
+            #          cache: 'npm'
+            #
+            #      - name: InstallDependencies
+            #        run: npm install
+            #
+            #      - name: Build Project
+            #        run: npm run build
 
-      - name: Deploy week-two
-        run: |
-          sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USERNAME }}@edunix.metropolia.fi "mkdir -p ~/public_html/2022-web-technologies-node/ui"
-          sshpass -p "${{ secrets.SSH_PASSWORD }}" rsync -e "ssh -o StrictHostKeyChecking=no" -a --progress --delete ./week-two/ui/ ${{ secrets.SSH_USERNAME }}@edunix.metropolia.fi:~/public_html/2022-web-technologies-node/ui
+            - name: Deploy week-two
+              run: |
+                  sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USERNAME }}@edunix.metropolia.fi "mkdir -p ~/public_html/2022-web-technologies-node/ui"
+                  sshpass -p "${{ secrets.SSH_PASSWORD }}" rsync -e "ssh -o StrictHostKeyChecking=no" -a --progress --delete ./week-two/ui/ ${{ secrets.SSH_USERNAME }}@edunix.metropolia.fi:~/public_html/2022-web-technologies-node/ui

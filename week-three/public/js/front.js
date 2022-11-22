@@ -21,7 +21,9 @@ window.addEventListener('load', () => {
             h2.innerHTML = cat.name;
 
             const p1 = document.createElement('p');
-            p1.innerHTML = `Birthdate: ${new Date(cat.birthdate).toDateString()}`;
+            p1.innerHTML = `Birthdate: ${new Date(
+                cat.birthdate
+            ).toDateString()}`;
 
             const p2 = document.createElement('p');
             p2.innerHTML = `Weight: ${cat.weight}kg`;
@@ -44,7 +46,10 @@ window.addEventListener('load', () => {
                     method: 'DELETE'
                 };
                 try {
-                    const response = await fetch(url + '/cat/' + cat.cat_id, fetchOptions);
+                    const response = await fetch(
+                        url + '/cat/' + cat.cat_id,
+                        fetchOptions
+                    );
                     const json = await response.json();
                     console.log('delete response', json);
                     getCat();
@@ -54,7 +59,9 @@ window.addEventListener('load', () => {
             });
 
             const li = document.createElement('li');
-            li.classList.add(...'p-2 border border-2 border-black-400 rounded-md'.split(' '));
+            li.classList.add(
+                ...'p-2 border border-2 border-black-400 rounded-md'.split(' ')
+            );
 
             li.appendChild(h2);
             li.appendChild(figure);

@@ -4,13 +4,10 @@ const { db } = require('../database');
 
 const save = async ({ name, birthdate, weight, owner, fileName }) => {
     console.log({ name, birthdate, weight, owner, fileName });
-    await db.query('INSERT INTO `wop_cat` (`name`, `weight`, `owner`, `filename`, `birthdate`) VALUES (?, ?, ?, ?, ?)', [
-        name,
-        weight,
-        owner,
-        fileName,
-        birthdate
-    ]);
+    await db.query(
+        'INSERT INTO `wop_cat` (`name`, `weight`, `owner`, `filename`, `birthdate`) VALUES (?, ?, ?, ?, ?)',
+        [name, weight, owner, fileName, birthdate]
+    );
 };
 
 const getList = async () => {
@@ -21,7 +18,9 @@ const getList = async () => {
 };
 
 const getById = async (id) => {
-    const [rows] = await db.query('SELECT * FROM wop_cat WHERE cat_id = ?', [id]);
+    const [rows] = await db.query('SELECT * FROM wop_cat WHERE cat_id = ?', [
+        id
+    ]);
     return rows;
 };
 
@@ -32,14 +31,10 @@ const edit = async (cat) => {
             ...remoteCat,
             ...cat
         };
-        await db.query('UPDATE `wop_cat` SET name = ?, weight = ?, birthdate = ?, filename = ? , owner = ? WHERE cat_id = ?', [
-            name,
-            weight,
-            birthdate,
-            filename,
-            owner,
-            cat_id
-        ]);
+        await db.query(
+            'UPDATE `wop_cat` SET name = ?, weight = ?, birthdate = ?, filename = ? , owner = ? WHERE cat_id = ?',
+            [name, weight, birthdate, filename, owner, cat_id]
+        );
     }
 };
 

@@ -14,8 +14,12 @@ window.addEventListener('load', () => {
     // submit add user form
     form.addEventListener('submit', async (evt) => {
         evt.preventDefault();
-        formFields.email.className = [formFields.email.className, 'invalid'].join(' ');
-        formFields.email.nextElementSibling.textContent = 'I expect an e-mail, darling!';
+        formFields.email.className = [
+            formFields.email.className,
+            'invalid'
+        ].join(' ');
+        formFields.email.nextElementSibling.textContent =
+            'I expect an e-mail, darling!';
         formFields.email.nextElementSibling.className = 'error active';
 
         // const data = serializeJson(addUserForm);

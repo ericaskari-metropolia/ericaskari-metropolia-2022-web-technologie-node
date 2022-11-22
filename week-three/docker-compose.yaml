@@ -1,14 +1,14 @@
 version: '3.1'
 
 services:
-  week-three-db:
-    image: mysql:8.0.28
-    restart: "no"
-    container_name: week-three-db
-    environment:
-      MYSQL_DATABASE: metropolia
-      MYSQL_USER: metropolia
-      MYSQL_PASSWORD: metropolia
-      MYSQL_ROOT_PASSWORD: metropolia
-    ports:
-      - "3306:3306"
+    week-three-db:
+        image: mysql:8.0.28
+        restart: 'no'
+        container_name: week-three-db
+        environment:
+            MYSQL_DATABASE: metropolia
+            MYSQL_USER: metropolia
+            MYSQL_PASSWORD: metropolia
+            MYSQL_ROOT_PASSWORD: metropolia
+        ports:
+            - '3306:3306'
