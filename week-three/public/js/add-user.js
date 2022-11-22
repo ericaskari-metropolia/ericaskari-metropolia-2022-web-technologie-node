@@ -40,5 +40,6 @@ window.addEventListener('load', () => {
             }
             console.log(json);
         }
+        alert(`Unknown Error happened: Code: ${response.status}`);
     });
 });

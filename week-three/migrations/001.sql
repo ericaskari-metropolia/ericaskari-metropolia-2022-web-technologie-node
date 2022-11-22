@@ -1,23 +1,26 @@
 CREATE TABLE user
 (
-    id       int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    name     text    NOT NULL,
-    email    text    NOT NULL,
-    password text    NOT NULL,
-    role     int(1)  NOT NULL DEFAULT 1
+    id       int(11)      NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    name     text         NOT NULL,
+    email    varchar(255) NOT NULL UNIQUE,
+    password varchar(255) NOT NULL,
+    role     int(1)       NOT NULL DEFAULT 1
 );
+
 
 
 CREATE TABLE cat
 (
-    id        int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    name      text    NOT NULL,
-    weight    float   NOT NULL,
-    owner_id  int(11) NOT NULL,
-    file_name  text    NOT NULL,
-    birthdate date    NOT NULL,
+    id        int(11)      NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    name      varchar(255) NOT NULL,
+    weight    float        NOT NULL,
+    owner_id  int(11)      NOT NULL,
+    file_name varchar(255) NOT NULL,
+    birthdate date         NOT NULL,
     CONSTRAINT fk_cat_owner_id FOREIGN KEY (owner_id) REFERENCES user (id) ON DELETE CASCADE
 );
+
+
 
 
 

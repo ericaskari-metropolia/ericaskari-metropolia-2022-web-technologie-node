@@ -88,5 +88,17 @@ window.addEventListener('load', () => {
             alert('Updated successfully!');
             location.href = 'front.html';
         }
+
+        if (response.status === 400) {
+            const json = await response.json();
+            const { errors = [] } = json ?? {};
+            for (let { msg, param, location } of errors) {
+                if (formFields[param]) {
+                    formFields[param].nextElementSibling.textContent = msg;
+                }
+            }
+            console.log(json);
+        }
+        alert(`Unknown Error happened: Code: ${response.status}`);
     });
 });

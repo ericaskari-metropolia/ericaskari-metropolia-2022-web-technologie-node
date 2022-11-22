@@ -7,4 +7,4 @@ Node version: v16.16.0
     npm run start
     docker-compose up -d
 
-Client side validation added to all forms.
+Client side validation and Server side validation added to all forms.

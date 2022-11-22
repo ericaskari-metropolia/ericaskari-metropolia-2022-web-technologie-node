@@ -11,7 +11,7 @@ router
     .get(controller.getList)
     .post(
         body('name').isString().isLength({ min: 1 }),
-        body('email').isEmail(),
+        body('email').isEmail().normalizeEmail(),
         body('password').isString().isLength({ min: 8 }),
         controller.save
     )
