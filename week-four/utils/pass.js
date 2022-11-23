@@ -1,4 +1,5 @@
 'use strict';
+const { randomUUID } = require('crypto');
 const passport = require('passport');
 const Strategy = require('passport-local').Strategy;
 
@@ -41,19 +42,39 @@ const getUserLogin = (email) => {
 
 // serialize: store user id in session
 passport.serializeUser((id, done) => {
-    console.log('serialize', id);
+    console.log('serialize');
+
+    done(
+        null,
+        users.find((x) => x.user_id === id)
+    );
     // serialize user id by adding it to 'done()' callback
 });
 
 // deserialize: get user id from session and get all user data
-passport.deserializeUser(async (id, done) => {
+passport.deserializeUser(async (user, done) => {
     // get user data by id from getUser
-    console.log('deserialize', user);
+    console.log('deserialize');
+
+    done(null, user);
+
     // deserialize user by adding it to 'done()' callback
 });
 
 passport.use(
     new Strategy((username, password, done) => {
+        const user = users.find((x) => x.email === username);
+
+        if (!user) {
+            done(null, false);
+        }
+
+        if (user.password === password) {
+            return done(null, user.user_id);
+        }
+
+        done(null, false);
+
         // get user by username from getUserLogin
         // if user is undefined
         // return done(null, false);
