@@ -9,6 +9,23 @@ const LocalStrategy = require('passport-local').Strategy;
 const ExtractJwt = require('passport-jwt').ExtractJwt;
 
 const initPassport = () => {
+    // serialize: store user id in session
+    passport.serializeUser(async (user, done) => {
+        console.log('serializeUser', user);
+        done(null, user);
+    });
+
+    // deserialize: get user id from session and get all user data
+    passport.deserializeUser(async (userId, done) => {
+        // get user data by id from getUser
+        console.log('deserialize', userId);
+        const user = await userService.getById(userId);
+        console.log('deserialize: ', user);
+        done(null, user);
+
+        // deserialize user by adding it to 'done()' callback
+    });
+
     passport.use(
         new JwtStrategy(
             {
@@ -18,8 +35,7 @@ const initPassport = () => {
                 audience: environment.JWT_AUDIENCE
             },
             async function (jwt_payload, done) {
-                const user = userService.getById(jwt_payload.sub);
-
+                const user = await userService.getById(jwt_payload.sub);
                 if (user) {
                     return done(null, user);
                 }
@@ -45,29 +61,13 @@ const initPassport = () => {
                 }
 
                 if (user.password === password) {
-                    return done(null, user.id);
+                    return done(null, user);
                 }
 
                 done(null, false);
             }
         )
     );
-
-    // serialize: store user id in session
-    passport.serializeUser(async (id, done) => {
-        console.log('serializeUser', id);
-        done(null, await userService.getById(id));
-    });
-
-    // deserialize: get user id from session and get all user data
-    passport.deserializeUser(async (user, done) => {
-        // get user data by id from getUser
-        console.log('deserialize', user);
-
-        done(null, await userService.getById(id));
-
-        // deserialize user by adding it to 'done()' callback
-    });
 };
 
 const handleTokenUser = () => {

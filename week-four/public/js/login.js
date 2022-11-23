@@ -1,5 +1,8 @@
 'use strict';
+import { storage, endpoints } from './common.js';
+
 window.addEventListener('load', () => {
+    console.log({ storage, endpoints });
     const url = 'http://localhost:3000'; // change url when uploading to server
 
     // select existing html elements
@@ -25,8 +28,9 @@ window.addEventListener('load', () => {
             alert(json.message);
         } else {
             // save token
-            sessionStorage.setItem('token', json.token);
-            sessionStorage.setItem('user', JSON.stringify(json.user));
+            storage.setUser(json.user);
+            storage.setToken(json.accessToken);
+            storage.setExpiresAt(json.expiresAt);
             location.href = 'front.html';
         }
     });
@@ -44,11 +48,10 @@ window.addEventListener('load', () => {
         };
         const response = await fetch(url + '/auth/register', fetchOptions);
         if (response.status === 200) {
-            const { message, user, accessToken, expiresAt } =
-                await response.json();
-            sessionStorage.setItem('token', accessToken);
-            sessionStorage.setItem('expiresAt', expiresAt);
-            sessionStorage.setItem('user', JSON.stringify(user));
+            const json = await response.json();
+            storage.setUser(json.user);
+            storage.setToken(json.accessToken);
+            storage.setExpiresAt(json.expiresAt);
             alert(message);
             location.href = 'front.html';
         } else {

@@ -1,14 +1,9 @@
 'use strict';
+import { storage, endpoints, url } from './common.js';
 
-window.addEventListener('load', () => {
-    const endpoints = {};
-    const url = 'http://localhost:3000'; // change url when uploading to server
-
+window.addEventListener('load', async () => {
     // select existing html elements
     const ul = document.querySelector('#list');
-
-    // get user data for admin check
-    const user = JSON.parse(sessionStorage.getItem('user'));
 
     // create cat cards
     const createCatCards = (cats) => {
@@ -17,7 +12,7 @@ window.addEventListener('load', () => {
         cats.forEach((cat) => {
             // create li with DOM methods
             const img = document.createElement('img');
-            img.src = url + '/thumbnails/' + cat.filename;
+            img.src = url + '/images/' + cat.fileName;
             img.alt = cat.name;
             img.classList.add('resp');
 
@@ -38,7 +33,7 @@ window.addEventListener('load', () => {
             p2.innerHTML = `Weight: ${cat.weight}kg`;
 
             const p3 = document.createElement('p');
-            p3.innerHTML = `Owner: ${cat.ownername}`;
+            p3.innerHTML = `Owner: ${cat.ownerName}`;
 
             const li = document.createElement('li');
             li.classList.add('light-border');
@@ -49,7 +44,10 @@ window.addEventListener('load', () => {
             li.appendChild(p2);
             li.appendChild(p3);
             ul.appendChild(li);
-            if (user.role === 0 || user.user_id === cat.owner) {
+            if (
+                storage.getUser().role === 0 ||
+                storage.getUser().user_id === cat.owner
+            ) {
                 // link to modify form
                 const modButton = document.createElement('a');
                 modButton.innerHTML = 'Modify';
@@ -61,23 +59,24 @@ window.addEventListener('load', () => {
                 delButton.innerHTML = 'Delete';
                 delButton.classList.add('button');
                 delButton.addEventListener('click', async () => {
-                    const fetchOptions = {
-                        method: 'DELETE',
-                        headers: {
-                            Authorization:
-                                'Bearer ' + sessionStorage.getItem('token')
-                        }
-                    };
-                    try {
-                        const response = await fetch(
-                            url + '/cat/' + cat.cat_id,
-                            fetchOptions
+                    {
+                        const { error } = await endpoints.deleteCatById(
+                            cat.id,
+                            storage.getToken()
                         );
-                        const json = await response.json();
-                        console.log('delete response', json);
-                        getCat();
-                    } catch (e) {
-                        console.log(e.message);
+                        if (error) {
+                            console.log(error.message);
+                        }
+                    }
+                    {
+                        const { error, items } = await endpoints.getCats(
+                            storage.getToken()
+                        );
+                        if (error) {
+                            console.log(error.message);
+                        } else {
+                            createCatCards(items);
+                        }
                     }
                 });
 
@@ -87,20 +86,12 @@ window.addEventListener('load', () => {
         });
     };
 
-    // AJAX call
-    const getCat = async () => {
-        try {
-            const fetchOptions = {
-                headers: {
-                    Authorization: 'Bearer ' + sessionStorage.getItem('token')
-                }
-            };
-            const response = await fetch(url + '/cat', fetchOptions);
-            const cats = await response.json();
-            createCatCards(cats);
-        } catch (e) {
-            console.log(e.message);
+    {
+        const { error, items } = await endpoints.getCats(storage.getToken());
+        if (error) {
+            console.log(error.message);
+        } else {
+            createCatCards(items);
         }
-    };
-    getCat();
+    }
 });

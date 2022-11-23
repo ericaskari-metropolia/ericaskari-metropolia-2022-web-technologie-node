@@ -20,14 +20,22 @@ router
         validateExpectedFields('/register'),
         wrapWithErrorHandler(controller.register)
     );
+
 router
     .route('/login')
     .post(
         body('username').isEmail().normalizeEmail(),
         body('password').isString(),
+        validateExpectedFields('/login'),
         passport.authenticate('local'),
-        validateExpectedFields('/register'),
         wrapWithErrorHandler(controller.login)
+    );
+
+router
+    .route('/token')
+    .get(
+        passport.authenticate('jwt', { session: false }),
+        wrapWithErrorHandler(controller.token)
     );
 
 module.exports = router;

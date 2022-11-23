@@ -136,15 +136,7 @@ const runMigrations = async (db) => {
 
 module.exports = {
     pool,
-    db: {
-        query: async (query) => {
-            try {
-                return pool.promise().query(query);
-            } catch (e) {
-                throw new Error(e);
-            }
-        }
-    },
+    db: pool.promise(),
     mysql,
     createMigrationsTable,
     dbName: environment.APP_DB_NAME,

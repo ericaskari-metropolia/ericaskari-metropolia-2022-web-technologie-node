@@ -1,6 +1,6 @@
 'use strict';
 const jwt = require('jsonwebtoken');
-const { JWT_SECRET } = require('../environment');
+const environment = require('../environment');
 
 const AppJwtTokens = {
     USER_LOGIN_TOKEN: 'USER_LOGIN_TOKEN'
@@ -9,7 +9,7 @@ const JWT_LOGIN_TOKEN_EXPIRE_IN = 3600;
 
 const verifyToken = (token) => {
     try {
-        jwt.verify(token, JWT_SECRET);
+        jwt.verify(token, environment.JWT_SECRET);
         return { isVerified: true, tokenError: null };
     } catch (e) {
         return { isVerified: false, tokenError: e.name };
@@ -41,8 +41,10 @@ const validateAndDecodeToken = (token, tokenType) => {
 const generateToken = (sub, tokenType, expiresInSeconds) => {
     const payload = { sub, type: tokenType };
 
-    const accessToken = jwt.sign(payload, JWT_SECRET, {
-        expiresIn: expiresInSeconds
+    const accessToken = jwt.sign(payload, environment.JWT_SECRET, {
+        expiresIn: expiresInSeconds,
+        audience: environment.JWT_AUDIENCE,
+        issuer: environment.JWT_ISSUER
     });
 
     return {
