@@ -8,6 +8,9 @@ const users = require('./routes/user.route');
 const images = require('./routes/images.route');
 const auth = require('./routes/auth.route');
 const { db, runMigrations } = require('./database');
+const { initPassport } = require('./services/auth.service');
+const passport = require('passport');
+const { globalErrorHandler } = require('./services/error-handler.service');
 
 async function start() {
     const app = express();
@@ -24,13 +27,10 @@ async function start() {
     app.use('/user', users);
     app.use('/images', images);
     app.use('/auth', auth);
-    app.use((err, req, res, next) => {
-        if (res.headersSent) {
-            return next(err);
-        }
-        res.status(500);
-        res.render('error', { error: err });
-    });
+    app.use(globalErrorHandler());
+
+    app.use(passport.initialize());
+    initPassport();
 
     app.listen(port, () => {
         console.log(`Api Running on port ${port}!`);

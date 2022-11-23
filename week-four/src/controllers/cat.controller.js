@@ -7,14 +7,6 @@ const getList = async (req, res) => {
 };
 
 const getById = async (req, res) => {
-    {
-        const errors = validationResult(req);
-        console.log({ errors });
-        if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array() });
-        }
-    }
-
     const catId = req.params['id'] ?? '';
     console.log(catId);
     const cat = await catService.getById(catId);
@@ -29,14 +21,6 @@ const getById = async (req, res) => {
 };
 
 const save = async (req, res) => {
-    {
-        const errors = validationResult(req);
-        console.log({ errors });
-        if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array() });
-        }
-    }
-
     const { name, birthdate, weight, ownerId } = req.body ?? {};
     const { filename: fileName } = req.file ?? {};
 
@@ -53,14 +37,6 @@ const save = async (req, res) => {
 };
 
 const edit = async (req, res) => {
-    {
-        const errors = validationResult(req);
-        console.log({ errors });
-        if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array() });
-        }
-    }
-
     const { id, name, birthdate, weight, ownerId } = req.body ?? {};
     const cat = await catService.getById(id ?? '');
     if (cat) {
@@ -74,14 +50,6 @@ const edit = async (req, res) => {
 };
 
 const deleteById = async (req, res) => {
-    {
-        const errors = validationResult(req);
-        console.log({ errors });
-        if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array() });
-        }
-    }
-
     const catId = req.params['id'] ?? '';
     const cat = catService.getById(catId);
     if (cat) {

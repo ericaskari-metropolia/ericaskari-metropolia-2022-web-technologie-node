@@ -4,7 +4,7 @@ window.addEventListener('load', () => {
 
     // select existing html elements
     const loginForm = document.querySelector('#login-form');
-    const addUserForm = document.querySelector('#add-user-form');
+    const registerForm = document.querySelector('#add-user-form');
 
     // login
     loginForm.addEventListener('submit', async (evt) => {
@@ -32,9 +32,9 @@ window.addEventListener('load', () => {
     });
 
     // submit register form
-    addUserForm.addEventListener('submit', async (evt) => {
+    registerForm.addEventListener('submit', async (evt) => {
         evt.preventDefault();
-        const data = serializeJson(addUserForm);
+        const data = serializeJson(registerForm);
         const fetchOptions = {
             method: 'POST',
             headers: {
@@ -43,7 +43,16 @@ window.addEventListener('load', () => {
             body: JSON.stringify(data)
         };
         const response = await fetch(url + '/auth/register', fetchOptions);
-        const json = await response.json();
-        alert(json.message);
+        if (response.status === 200) {
+            const { message, user, accessToken, expiresAt } =
+                await response.json();
+            sessionStorage.setItem('token', accessToken);
+            sessionStorage.setItem('expiresAt', expiresAt);
+            sessionStorage.setItem('user', JSON.stringify(user));
+            alert(message);
+            location.href = 'front.html';
+        } else {
+            alert('Something went wrong!');
+        }
     });
 });

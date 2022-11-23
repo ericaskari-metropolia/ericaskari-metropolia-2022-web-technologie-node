@@ -8,14 +8,6 @@ const getList = async (req, res) => {
 };
 
 const getById = async (req, res) => {
-    {
-        const errors = validationResult(req);
-        console.log({ errors });
-        if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array() });
-        }
-    }
-
     const catId = req.params['id'] ?? '';
     const user = await userService.getById(catId);
     if (user) {
@@ -28,14 +20,6 @@ const getById = async (req, res) => {
 };
 
 const save = async (req, res) => {
-    {
-        const errors = validationResult(req);
-        console.log({ errors });
-        if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array() });
-        }
-    }
-
     const { name, email, password } = req.body ?? {};
     console.log(req.body);
     console.log(req.file);
@@ -48,14 +32,6 @@ const save = async (req, res) => {
 };
 
 const edit = async (req, res) => {
-    {
-        const errors = validationResult(req);
-        console.log({ errors });
-        if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array() });
-        }
-    }
-
     const { id } = req.body ?? {};
     console.log(req.body);
     const user = await userService.getById(id ?? '');
@@ -70,14 +46,6 @@ const edit = async (req, res) => {
 };
 
 const deleteById = async (req, res) => {
-    {
-        const errors = validationResult(req);
-        console.log({ errors });
-        if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array() });
-        }
-    }
-
     const catId = req.params['id'] ?? '';
     const user = userService.getById(catId);
     if (user) {

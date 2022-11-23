@@ -17,19 +17,31 @@ const pool = mysql.createPool({
 });
 
 const createMigrationsTable = async (db) => {
-    await db.query(
-        'CREATE TABLE migrations ( name int NOT NULL PRIMARY KEY, date bigint NOT NULL);'
-    );
+    try {
+        await db.query(
+            'CREATE TABLE migrations ( name int NOT NULL PRIMARY KEY, date bigint NOT NULL);'
+        );
+    } catch (e) {
+        throw new Error(e);
+    }
 };
 
 const getCurrentMigrations = async (db) => {
-    const [result] = await db.query('SELECT name, date from migrations;');
-    return result;
+    try {
+        const [result] = await db.query('SELECT name, date from migrations;');
+        return result;
+    } catch (e) {
+        throw new Error(e);
+    }
 };
 
 const getTableNameList = async (db) => {
-    const [data] = await db.query('show tables;');
-    return data.map((x) => Object.values(x)).flat();
+    try {
+        const [data] = await db.query('show tables;');
+        return data.map((x) => Object.values(x)).flat();
+    } catch (e) {
+        throw new Error(e);
+    }
 };
 
 const runInTransaction = async (db, queryRunner = async (conn) => {}) => {
@@ -124,7 +136,15 @@ const runMigrations = async (db) => {
 
 module.exports = {
     pool,
-    db: pool.promise(),
+    db: {
+        query: async (query) => {
+            try {
+                return pool.promise().query(query);
+            } catch (e) {
+                throw new Error(e);
+            }
+        }
+    },
     mysql,
     createMigrationsTable,
     dbName: environment.APP_DB_NAME,

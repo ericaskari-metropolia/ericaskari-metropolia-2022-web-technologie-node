@@ -7,6 +7,7 @@ const save = async ({ name, email, password, role = 0 }) => {
         'INSERT INTO user (name, email, password, role) VALUES (?, ?, ?, ?)',
         [name, email, password, role]
     );
+    return await getByEmail(email);
 };
 
 const getList = async () => {
@@ -22,6 +23,25 @@ const getList = async () => {
 
 const getById = async (id) => {
     const [rows] = await db.query('SELECT * FROM user WHERE id = ?', [id]);
+    if (rows.length === 0) {
+        return null;
+    }
+    {
+        const { id, name, email, password, role } = rows[0];
+        return {
+            id,
+            name,
+            email,
+            password,
+            role
+        };
+    }
+};
+
+const getByEmail = async (email) => {
+    const [rows] = await db.query('SELECT * FROM user WHERE email = ?', [
+        email
+    ]);
     if (rows.length === 0) {
         return null;
     }
@@ -60,6 +80,7 @@ module.exports = {
     save: save,
     getList: getList,
     getById: getById,
+    getByEmail: getByEmail,
     edit: edit,
     deleteById: deleteById
 };

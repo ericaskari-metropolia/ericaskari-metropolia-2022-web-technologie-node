@@ -1,27 +1,29 @@
 'use strict';
 
 const userService = require('../services/user.service');
-const { validationResult } = require('express-validator');
+const { createUserLoginToken } = require('../services/jwt.service');
 
-const register = async (req, res) => {
-    {
-        const errors = validationResult(req);
-        console.log({ errors });
-        if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array() });
-        }
-    }
-
+const register = async (req, res, next) => {
     const { name, email, password } = req.body ?? {};
 
-    await userService.save({
-        name,
-        email,
-        password
-    });
-    res.send({ message: 'User Saved!' });
+    const user = await userService.save(
+        {
+            name,
+            email,
+            password
+        },
+        next
+    );
+
+    const { accessToken, expiresAt } = createUserLoginToken(user.id);
+    res.send({ message: 'User Saved!', user, accessToken, expiresAt });
+};
+
+const login = async (req, res, next) => {
+    res.send({ message: 'User logged in!' });
 };
 
 module.exports = {
-    register: register
+    register: register,
+    login: login
 };
