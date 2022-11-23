@@ -18,7 +18,7 @@ window.addEventListener('load', async () => {
 
             // open image in single.html
             img.addEventListener('click', () => {
-                location.href = 'single.html?id=' + cat.cat_id;
+                location.href = 'single.html?id=' + cat.id;
             });
 
             const figure = document.createElement('figure').appendChild(img);
@@ -51,7 +51,7 @@ window.addEventListener('load', async () => {
                 // link to modify form
                 const modButton = document.createElement('a');
                 modButton.innerHTML = 'Modify';
-                modButton.href = `modify-cat.html?id=${cat.cat_id}`;
+                modButton.href = `modify-cat.html?id=${cat.id}`;
                 modButton.classList.add('button');
 
                 // delete selected cat

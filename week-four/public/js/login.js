@@ -1,5 +1,5 @@
 'use strict';
-import { storage, endpoints } from './common.js';
+import { storage, endpoints, handleErrorCode } from './common.js';
 
 window.addEventListener('load', () => {
     console.log({ storage, endpoints });
@@ -9,28 +9,23 @@ window.addEventListener('load', () => {
     const loginForm = document.querySelector('#login-form');
     const registerForm = document.querySelector('#add-user-form');
 
+    handleErrorCode();
+
     // login
     loginForm.addEventListener('submit', async (evt) => {
         evt.preventDefault();
-        const data = serializeJson(loginForm);
-        const fetchOptions = {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        };
+        const { body, error, response } = await endpoints.login(
+            JSON.stringify(serializeJson(loginForm))
+        );
+        console.log('login response', body);
 
-        const response = await fetch(url + '/auth/login', fetchOptions);
-        const json = await response.json();
-        console.log('login response', json);
-        if (!json.user) {
-            alert(json.message);
+        if (error) {
+            console.log(error);
         } else {
-            // save token
-            storage.setUser(json.user);
-            storage.setToken(json.accessToken);
-            storage.setExpiresAt(json.expiresAt);
+            const { user, accessToken, expiresAt } = body;
+            storage.setUser(user);
+            storage.setToken(accessToken);
+            storage.setExpiresAt(expiresAt);
             location.href = 'front.html';
         }
     });
@@ -38,24 +33,18 @@ window.addEventListener('load', () => {
     // submit register form
     registerForm.addEventListener('submit', async (evt) => {
         evt.preventDefault();
-        const data = serializeJson(registerForm);
-        const fetchOptions = {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        };
-        const response = await fetch(url + '/auth/register', fetchOptions);
-        if (response.status === 200) {
-            const json = await response.json();
-            storage.setUser(json.user);
-            storage.setToken(json.accessToken);
-            storage.setExpiresAt(json.expiresAt);
-            alert(message);
-            location.href = 'front.html';
+
+        const { body, error } = await endpoints.register(
+            JSON.stringify(serializeJson(registerForm))
+        );
+        if (error) {
+            console.log(error);
         } else {
-            alert('Something went wrong!');
+            const { user, accessToken, expiresAt } = body;
+            storage.setUser(user);
+            storage.setToken(accessToken);
+            storage.setExpiresAt(expiresAt);
+            location.href = 'front.html';
         }
     });
 });

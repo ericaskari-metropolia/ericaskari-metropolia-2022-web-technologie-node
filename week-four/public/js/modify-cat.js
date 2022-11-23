@@ -1,109 +1,66 @@
 'use strict';
+import {
+    createUserDropdownOptions,
+    endpoints,
+    getQueryParam
+} from './common.js';
+
 window.addEventListener('load', () => {
-    const url = 'http://localhost:3000'; // change url when uploading to server
-
-    // get query parameter
-    const getQParam = (param) => {
-        const queryString = window.location.search;
-        const urlParams = new URLSearchParams(queryString);
-        return urlParams.get(param);
-    };
-
     // get id from address
-    const cat_id = getQParam('id');
+    const catId = getQueryParam('id');
 
     // select existing html elements
-    const modForm = document.querySelector('#modCatForm');
-    const userList = document.querySelector('.add-owner');
+    const form = document.querySelector('#modCatForm');
+    const ownerIdSelectEl = document.querySelector('.add-owner');
+    const formFields = {
+        name: form.querySelector(`input[name='name']`),
+        birthdate: form.querySelector(`input[name='birthdate']`),
+        weight: form.querySelector(`input[name='weight']`),
+        singleImage: form.querySelector(`input[name='singleImage']`)
+    };
 
     // get user data for admin check
     const user = JSON.parse(sessionStorage.getItem('user'));
 
     // if user is not admin delete owner selection
-    if (user.role > 0) userList.remove();
-
-    // add existing cat data to form
-    const getCat = async (id) => {
-        const fetchOptions = {
-            headers: {
-                Authorization: 'Bearer ' + sessionStorage.getItem('token')
-            }
-        };
-        const response = await fetch(url + '/cat/' + id, fetchOptions);
-        const cat = await response.json();
-        const inputs = modForm.querySelectorAll('input');
-        inputs[0].value = cat.name;
-        inputs[1].value = cat.birthdate;
-        inputs[2].value = cat.weight;
-        if (user.role === 0) modForm.querySelector('select').value = cat.owner;
-    };
-
-    // create user options to <select>
-    const createUserOptions = (users) => {
-        // clear user list
-        userList.innerHTML = '';
-        users.forEach((user) => {
-            // create options with DOM methods
-            const option = document.createElement('option');
-            option.value = user.user_id;
-            option.innerHTML = user.name;
-            option.classList.add('light-border');
-            userList.appendChild(option);
-        });
-        // load cat data after users
-        getCat(cat_id);
-    };
-
-    // get users to make options
-    const getUsers = async () => {
-        try {
-            const options = {
-                headers: {
-                    Authorization: 'Bearer ' + sessionStorage.getItem('token')
-                }
-            };
-            const response = await fetch(url + '/user', options);
-            const users = await response.json();
-            createUserOptions(users);
-        } catch (e) {
-            console.log(e.message);
-        }
-    };
+    if (user.role > 0) ownerIdSelectEl.remove();
 
     // submit modify form
-    modForm.addEventListener('submit', async (evt) => {
+    form.addEventListener('submit', async (evt) => {
         evt.preventDefault();
-        const data = serializeJson(modForm);
+        const data = serializeJson(form);
         // remove empty properties
         for (const [prop, value] of Object.entries(data)) {
             if (value === '') {
                 delete data[prop];
             }
         }
-        const fetchOptions = {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: 'Bearer ' + sessionStorage.getItem('token')
-            },
-            body: JSON.stringify(data)
-        };
-
-        console.log(fetchOptions);
-        const response = await fetch(url + '/cat/' + cat_id, fetchOptions);
-        const json = await response.json();
-        if (json.error) {
-            alert(json.error.message);
+        const { response, body, error } = await endpoints.editCat(data);
+        if (error) {
+            alert(error.message);
         } else {
-            alert(json.message);
+            alert(body.message);
         }
         location.href = 'front.html';
     });
 
     // start filling the form
+    // if admin
     if (user.role === 0) {
-        getUsers(); // if admin
+        endpoints.getUsers().then(({ error, body, response }) => {
+            if (!error) {
+                createUserDropdownOptions(ownerIdSelectEl, body);
+            }
+        });
     } else {
-        getCat(cat_id); // if regular user
+        endpoints.getCatById(catId).then(({ response, body, error }) => {
+            const inputs = form.querySelectorAll('input');
+            inputs[0].value = body.name;
+            inputs[1].value = body.birthdate;
+            inputs[2].value = body.weight;
+            if (user.role === 0) {
+                form.querySelector('select').value = body.ownerId;
+            }
+        });
     }
 });

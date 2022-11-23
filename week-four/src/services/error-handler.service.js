@@ -1,6 +1,13 @@
 'use strict';
 const { validationResult } = require('express-validator');
 
+const ERROR_CODES = {
+    EXPIRED_TOKEN: 0,
+    BAD_TOKEN: 1,
+    EMAIL_TAKEN: 2,
+    VALIDATION_ERR: 3
+};
+
 const globalErrorHandler = () => {
     return (error, request, response, next) => {
         // Error handling middleware functionality
@@ -36,5 +43,6 @@ const wrapWithErrorHandler = (handler = async (req, res) => {}) => {
 module.exports = {
     validateExpectedFields,
     wrapWithErrorHandler: wrapWithErrorHandler,
-    globalErrorHandler: globalErrorHandler
+    globalErrorHandler: globalErrorHandler,
+    ERROR_CODES: ERROR_CODES
 };

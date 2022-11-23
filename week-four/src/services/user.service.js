@@ -69,10 +69,33 @@ const edit = async (user) => {
             [name, email, password, role, id]
         );
     }
+    return await getById(user.id ?? '');
 };
 
 const deleteById = async (id) => {
     await db.query('DELETE FROM user WHERE id = ?', [id]);
+};
+
+const patch = async (model, allowedKeys) => {
+    const dbModel = await getById(model.id);
+
+    if (!dbModel) {
+        throw new Error('NOT_FOUND');
+    }
+
+    {
+        //  property protection
+        Object.entries(model).forEach(([key, apiValue]) => {
+            const capitalKey = key.charAt(0).toUpperCase() + key.slice(1);
+            const allowedKey = `allow${capitalKey}Update`;
+
+            if (allowedKeys[allowedKey]) {
+                dbModel[key] = apiValue;
+            }
+        });
+    }
+
+    return await edit(model);
 };
 
 //  CRUD
@@ -81,6 +104,6 @@ module.exports = {
     getList: getList,
     getById: getById,
     getByEmail: getByEmail,
-    edit: edit,
-    deleteById: deleteById
+    deleteById: deleteById,
+    patch: patch
 };

@@ -1,5 +1,5 @@
 'use strict';
-import { storage, endpoints } from './common.js';
+import { storage, endpoints, handleKnownClientErrors } from './common.js';
 
 window.addEventListener('load', async () => {
     if (!storage.getToken() || !storage.getUser()) {
@@ -8,10 +8,9 @@ window.addEventListener('load', async () => {
     }
 
     // check if token valid
-    const { error, item } = await endpoints.getTokenUser();
-
+    const { error, item, response } = await endpoints.getTokenUser();
     if (error) {
-        // location.href = 'logout.html';
+        handleKnownClientErrors(error);
     } else {
         storage.setUser(item);
     }

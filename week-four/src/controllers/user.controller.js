@@ -1,7 +1,8 @@
+/// <reference path="../types" />
 'use strict';
 
 const userService = require('../services/user.service');
-const { validationResult } = require('express-validator');
+const catService = require('../services/cat.service');
 
 const getList = async (req, res) => {
     res.send(await userService.getList());
@@ -20,6 +21,7 @@ const getById = async (req, res) => {
 };
 
 const save = async (req, res) => {
+    const { user } = req;
     const { name, email, password } = req.body ?? {};
     console.log(req.body);
     console.log(req.file);
@@ -32,17 +34,14 @@ const save = async (req, res) => {
 };
 
 const edit = async (req, res) => {
-    const { id } = req.body ?? {};
-    console.log(req.body);
-    const user = await userService.getById(id ?? '');
-    if (user) {
-        await userService.edit(req.body ?? {});
-        res.send(true);
-    } else {
-        res.status(404).send({
-            error: 'not found'
-        });
-    }
+    await userService.patch(req.body, {
+        allowNameUpdate: true,
+        allowEmailUpdate: true
+    });
+
+    res.status(200).send({
+        message: 'User updated!'
+    });
 };
 
 const deleteById = async (req, res) => {

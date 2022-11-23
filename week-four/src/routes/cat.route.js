@@ -10,6 +10,9 @@ const {
     validateExpectedFields,
     wrapWithErrorHandler
 } = require('../services/error-handler.service');
+const { authenticateJWT } = require('../services/auth.service');
+
+router.use(authenticateJWT());
 
 router
     .route('/')
@@ -19,17 +22,8 @@ router
         body('name').isString(),
         body('birthdate').isDate(),
         body('weight').isNumeric(),
-        body('ownerId').isNumeric(),
         validateExpectedFields('POST /cat'),
         wrapWithErrorHandler(controller.save)
-    )
-    .put(
-        body('name').isString(),
-        body('birthdate').isDate(),
-        body('weight').isNumeric(),
-        body('ownerId').isNumeric(),
-        validateExpectedFields('PUT /cat'),
-        wrapWithErrorHandler(controller.edit)
     );
 
 router
@@ -43,6 +37,14 @@ router
         param('id').isNumeric(),
         validateExpectedFields('DELETE /cat/:id'),
         wrapWithErrorHandler(controller.deleteById)
+    )
+    .patch(
+        param('id').isNumeric(),
+        body('name').isString(),
+        body('birthdate').isDate(),
+        body('weight').isNumeric(),
+        validateExpectedFields('PUT /cat'),
+        wrapWithErrorHandler(controller.edit)
     );
 
 module.exports = router;

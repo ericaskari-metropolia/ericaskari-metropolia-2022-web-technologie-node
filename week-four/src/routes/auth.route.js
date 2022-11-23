@@ -10,6 +10,7 @@ const {
     wrapWithErrorHandler
 } = require('../services/error-handler.service');
 const passport = require('../../archive/utils/pass');
+const { authenticateJWT } = require('../services/auth.service');
 
 router
     .route('/register')
@@ -33,9 +34,6 @@ router
 
 router
     .route('/token')
-    .get(
-        passport.authenticate('jwt', { session: false }),
-        wrapWithErrorHandler(controller.token)
-    );
+    .get(authenticateJWT(), wrapWithErrorHandler(controller.token));
 
 module.exports = router;

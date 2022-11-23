@@ -21,7 +21,8 @@ const getById = async (req, res) => {
 };
 
 const save = async (req, res) => {
-    const { name, birthdate, weight, ownerId } = req.body ?? {};
+    const { user } = req;
+    const { name, birthdate, weight } = req.body ?? {};
     const { filename: fileName } = req.file ?? {};
 
     console.log(req.body);
@@ -31,22 +32,21 @@ const save = async (req, res) => {
         weight: weight,
         fileName: fileName,
         birthdate: birthdate,
-        ownerId: ownerId
+        ownerId: user.id
     });
     res.send({ message: 'Cat Saved!' });
 };
 
 const edit = async (req, res) => {
-    const { id, name, birthdate, weight, ownerId } = req.body ?? {};
-    const cat = await catService.getById(id ?? '');
-    if (cat) {
-        await catService.edit({ id, name, weight, ownerId, birthdate });
-        res.send(true);
-    } else {
-        res.status(404).send({
-            error: 'not found'
-        });
-    }
+    await catService.patch(req.body, {
+        allowNameUpdate: true,
+        allowBirthdateUpdate: true,
+        allowWeightUpdate: true
+    });
+
+    res.status(200).send({
+        message: 'Cat updated!'
+    });
 };
 
 const deleteById = async (req, res) => {

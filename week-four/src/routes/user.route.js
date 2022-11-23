@@ -9,7 +9,12 @@ const {
     validateExpectedFields,
     wrapWithErrorHandler
 } = require('../services/error-handler.service');
-const { handleTokenUser } = require('../services/auth.service');
+const {
+    handleTokenUser,
+    authenticateJWT
+} = require('../services/auth.service');
+
+router.use(authenticateJWT());
 
 router
     .route('/')

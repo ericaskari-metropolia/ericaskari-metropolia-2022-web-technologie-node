@@ -62,11 +62,33 @@ const deleteById = async (id) => {
     await db.query('DELETE FROM cat WHERE id = ?', [id]);
 };
 
+const patch = async (model, allowedKeys) => {
+    const dbModel = await getById(model.id);
+
+    if (!dbModel) {
+        throw new Error('NOT_FOUND');
+    }
+
+    {
+        //  property protection
+        Object.entries(model).forEach(([key, apiValue]) => {
+            const capitalKey = key.charAt(0).toUpperCase() + key.slice(1);
+            const allowedKey = `allow${capitalKey}Update`;
+
+            if (allowedKeys[allowedKey]) {
+                dbModel[key] = apiValue;
+            }
+        });
+    }
+
+    return await edit(model);
+};
+
 //  CRUD
 module.exports = {
     save: save,
     getList: getList,
     getById: getById,
-    edit: edit,
-    deleteById: deleteById
+    deleteById: deleteById,
+    patch: patch
 };

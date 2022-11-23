@@ -26,39 +26,87 @@
                     <h3>Add cat</h3>
                     <form
                         action="http://localhost:3000/cat"
-                        class="light-border"
+                        class="grid grid-cols-1 gap-4 p-2"
                         enctype="multipart/form-data"
                         id="addCatForm"
                         method="post"
                     >
-                        <input
-                            class="light-border"
-                            name="name"
-                            placeholder="Name"
-                            type="text"
-                        />
-                        <input
-                            class="light-border"
-                            name="birthdate"
-                            placeholder="Birthdate: YYYY-MM-DD"
-                            type="text"
-                        />
-                        <input
-                            class="light-border"
-                            name="weight"
-                            placeholder="Weight"
-                            step="0.1"
-                            type="number"
-                        />
-                        <input
-                            accept="image/*"
-                            class="light-border"
-                            name="cat"
-                            placeholder="Choose file"
-                            type="file"
-                        />
-                        <button class="light-border" type="submit">
-                            Upload
+                        <h3 class="text-lg">Add cat</h3>
+                        <hr />
+                        <div>
+                            <label for="name"
+                                >Name
+                                <span aria-label="required">*</span></label
+                            >
+                            <input
+                                class="light-border invalid:border-red-500 valid:border-green-500"
+                                id="name"
+                                name="name"
+                                placeholder="Name"
+                                required
+                                type="text"
+                            />
+                            <span aria-live="text-red-500" class="error"></span>
+                        </div>
+
+                        <div>
+                            <label for="birthdate"
+                                >Birthdate
+                                <span aria-label="required">*</span></label
+                            >
+                            <input
+                                class="light-border invalid:border-red-500 valid:border-green-500"
+                                id="birthdate"
+                                name="birthdate"
+                                placeholder="Birthdate: YYYY-MM-DD"
+                                required
+                                type="date"
+                            />
+                            <span aria-live="text-red-500" class="error"></span>
+                        </div>
+
+                        <div>
+                            <label for="weight"
+                                >Weight
+                                <span aria-label="required">*</span></label
+                            >
+                            <input
+                                class="light-border invalid:border-red-500 valid:border-green-500"
+                                id="weight"
+                                max="100"
+                                min="0"
+                                name="weight"
+                                placeholder="Weight"
+                                required
+                                step="0.1"
+                                type="number"
+                            />
+                            <span aria-live="text-red-500" class="error"></span>
+                        </div>
+
+                        <div>
+                            <label for="singleImage">
+                                Image
+                                <span aria-label="required">*</span>
+                            </label>
+                            <input
+                                accept="image/*"
+                                class="light-border invalid:border-red-500 valid:border-green-500"
+                                id="singleImage"
+                                name="singleImage"
+                                placeholder="Choose file"
+                                required
+                                type="file"
+                            />
+                            <span aria-live="text-red-500" class="error"></span>
+                        </div>
+
+                        <input hidden name="id" />
+                        <button
+                            class="light-border invalid:border-red-500 valid:border-green-500"
+                            type="submit"
+                        >
+                            Save
                         </button>
                     </form>
                 </div>

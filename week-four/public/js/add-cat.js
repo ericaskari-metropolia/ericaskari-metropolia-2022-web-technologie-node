@@ -1,26 +1,33 @@
 'use strict';
 
-window.addEventListener('load', () => {
-    const url = 'http://localhost:3000'; // change url when uploading to server
+import { endpoints } from './common.js';
 
+window.addEventListener('load', () => {
     // select existing html elements
-    const addForm = document.querySelector('#addCatForm');
-    const userList = document.querySelector('.add-owner');
+    const form = document.querySelector('#addCatForm');
+    const formFields = {
+        name: form.querySelector(`input[name='name']`),
+        birthdate: form.querySelector(`input[name='birthdate']`),
+        weight: form.querySelector(`input[name='weight']`),
+        singleImage: form.querySelector(`input[name='singleImage']`)
+    };
+
+    form.onsubmit = (event) => {
+        event.preventDefault();
+    };
 
     // submit add cat form
-    addForm.addEventListener('submit', async (evt) => {
+    form.addEventListener('submit', async (evt) => {
         evt.preventDefault();
-        const fd = new FormData(addForm);
-        const fetchOptions = {
-            method: 'POST',
-            headers: {
-                Authorization: 'Bearer ' + sessionStorage.getItem('token')
-            },
-            body: fd
-        };
-        const response = await fetch(url + '/cat', fetchOptions);
-        const json = await response.json();
-        alert(json.message);
-        location.href = 'front.html';
+        const { response, error, body } = await endpoints.createCat(
+            new FormData(form)
+        );
+        console.log({ error, body });
+        if (!error) {
+            alert(body.message);
+            location.href = 'front.html';
+        } else {
+            alert(error.message);
+        }
     });
 });

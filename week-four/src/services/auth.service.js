@@ -3,6 +3,7 @@ const passport = require('passport');
 const environment = require('../environment');
 const userService = require('../services/user.service');
 const { Strategy } = require('passport-local');
+const { ERROR_CODES } = require('./error-handler.service');
 
 const JwtStrategy = require('passport-jwt').Strategy;
 const LocalStrategy = require('passport-local').Strategy;
@@ -34,8 +35,9 @@ const initPassport = () => {
                 issuer: environment.JWT_ISSUER,
                 audience: environment.JWT_AUDIENCE
             },
-            async function (jwt_payload, done) {
-                const user = await userService.getById(jwt_payload.sub);
+            async function (payload, done) {
+                console.log({ payload });
+                const user = await userService.getById(payload.sub);
                 if (user) {
                     return done(null, user);
                 }
@@ -80,7 +82,41 @@ const handleTokenUser = () => {
         next();
     };
 };
+
+const authenticateJWT = () => {
+    return (req, res, next) => {
+        passport.authenticate(
+            'jwt',
+            { session: false },
+            (error, user, info, status) => {
+                console.log({ error, user, info, status });
+                if (info?.name === 'TokenExpiredError') {
+                    return res.status(401).send({
+                        code: ERROR_CODES.EXPIRED_TOKEN
+                    });
+                }
+                if (info?.name === 'JsonWebTokenError') {
+                    return res.status(401).send({
+                        code: ERROR_CODES.BAD_TOKEN
+                    });
+                }
+                if (error || !user || info || status) {
+                    return res.status(401).send({
+                        code: ERROR_CODES.BAD_TOKEN
+                    });
+                }
+                req.logIn(user, function (err) {
+                    if (err) {
+                        return next(err);
+                    }
+                    return next();
+                });
+            }
+        )(req, res, next);
+    };
+};
 module.exports = {
     handleTokenUser: handleTokenUser,
-    initPassport: initPassport
+    initPassport: initPassport,
+    authenticateJWT: authenticateJWT
 };
