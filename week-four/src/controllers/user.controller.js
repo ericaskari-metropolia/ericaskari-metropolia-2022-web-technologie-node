@@ -37,7 +37,6 @@ const save = async (req, res) => {
     }
 
     const { name, email, password } = req.body ?? {};
-    const { filename: fileName } = req.file ?? {};
     console.log(req.body);
     console.log(req.file);
     await userService.save({

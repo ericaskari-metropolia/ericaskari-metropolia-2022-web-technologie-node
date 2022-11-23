@@ -1,47 +1,85 @@
 <!DOCTYPE html>
 <html>
+    <head>
+        <meta charset="utf8" />
+        <title>Example</title>
+        <link href="./css/ui4.css" rel="stylesheet" />
+        <script src="./js/serialize.js"></script>
+        <script src="./js/login.js"></script>
+        <script src="https://cdn.tailwindcss.com"></script>
+    </head>
 
-<head>
-    <meta charset="utf8">
-    <title>Example</title>
-    <link href="./css/ui4.css" rel="stylesheet">
-</head>
+    <body>
+        <div class="container">
+            <div class="forms">
+                <div class="form-wrapper" id="login-wrapper">
+                    <h3>Login</h3>
+                    <form
+                        action="http://localhost:3000/auth/login"
+                        class="light-border"
+                        id="login-form"
+                        method="post"
+                    >
+                        <div>
+                            <label>Email:</label>
+                            <input
+                                class="light-border"
+                                name="username"
+                                type="text"
+                            />
+                        </div>
+                        <div>
+                            <label>Password:</label>
+                            <input
+                                class="light-border"
+                                name="password"
+                                type="password"
+                            />
+                        </div>
+                        <div>
+                            <button class="light-border" type="submit">
+                                Log In
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <button class="light-border" id="log-out" style="display: none">
+                    Log out
+                </button>
 
-<body>
-    <div class="container">
-        <div class="forms">
-            <div class="form-wrapper" id="login-wrapper">
-                <h3>Login</h3>
-                <form id="login-form" class="light-border" action="http://localhost:3000/auth/login" method="post">
-                    <div>
-                        <label>Email:</label>
-                        <input class="light-border" type="text" name="username" />
-                    </div>
-                    <div>
-                        <label>Password:</label>
-                        <input class="light-border" type="password" name="password" />
-                    </div>
-                    <div>
-                        <button class="light-border" type="submit">Log In</button>
-                    </div>
-                </form>
-            </div>
-            <button class="light-border" style="display: none;" id="log-out">Log out</button>
-
-            <div class="form-wrapper">
-                <h3>Register</h3>
-                <form action="http://localhost:3000/auth/register" method="post" class="light-border"
-                    id="add-user-form">
-                    <input class="light-border" type="text" name="name" placeholder="Name">
-                    <input class="light-border" type="text" name="email" placeholder="email">
-                    <input class="light-border" type="password" name="passwd" placeholder="Password">
-                    <button class="light-border" type="submit">Save</button>
-                </form>
+                <div class="form-wrapper">
+                    <h3>Register</h3>
+                    <form
+                        action="http://localhost:3000/auth/register"
+                        class="light-border"
+                        id="add-user-form"
+                        method="post"
+                    >
+                        <input
+                            class="light-border"
+                            name="name"
+                            placeholder="Name"
+                            type="text"
+                            value="Eric"
+                        />
+                        <input
+                            class="light-border"
+                            name="email"
+                            placeholder="email"
+                            type="text"
+                            value="eric@eric.com"
+                        />
+                        <input
+                            class="light-border"
+                            name="password"
+                            placeholder="Password"
+                            type="password"
+                            value="ericeric"
+                        />
+                        <button class="light-border" type="submit">Save</button>
+                    </form>
+                </div>
             </div>
         </div>
-    </div>
-    <script src="./js/serialize.js"></script>
-    <script src="./js/login.js"></script>
-</body>
-
+    </body>
 </html>

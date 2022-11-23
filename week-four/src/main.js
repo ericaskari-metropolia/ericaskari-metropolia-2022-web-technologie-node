@@ -6,6 +6,7 @@ const morgan = require('morgan');
 const cats = require('./routes/cat.route');
 const users = require('./routes/user.route');
 const images = require('./routes/images.route');
+const auth = require('./routes/auth.route');
 const { db, runMigrations } = require('./database');
 
 async function start() {
@@ -22,6 +23,7 @@ async function start() {
     app.use('/cat', cats);
     app.use('/user', users);
     app.use('/images', images);
+    app.use('/auth', auth);
     app.use((err, req, res, next) => {
         if (res.headersSent) {
             return next(err);
