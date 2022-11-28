@@ -25,16 +25,21 @@
                 <div class="form-wrapper">
                     <h3>Modify cat</h3>
                     <form class="light-border" id="modCatForm">
+                        <div
+                            class="col-span-2 rounded-md p-2 bg-orange-200 hidden"
+                            id="page-error"
+                        ></div>
                         <input
-                            class="light-border"
-                            name="name"
-                            placeholder="Name"
+                            class="light-border hidden"
+                            disabled
+                            name="id"
+                            placeholder="ID"
                             type="text"
                         />
                         <input
                             class="light-border"
-                            name="birthdate"
-                            placeholder="Birthdate: YYYY-MM-DD"
+                            name="name"
+                            placeholder="Name"
                             type="text"
                         />
                         <input
@@ -44,7 +49,26 @@
                             step="0.1"
                             type="number"
                         />
-                        <select class="light-border add-owner" name="owner">
+                        <input
+                            class="light-border"
+                            name="birthdate"
+                            placeholder="Birthdate"
+                            type="date"
+                        />
+                        <input
+                            accept="image/*"
+                            class="light-border"
+                            id="fileName"
+                            name="fileName"
+                            placeholder="Choose file"
+                            required
+                            type="file"
+                        />
+                        <select
+                            class="light-border add-owner hidden"
+                            disabled
+                            name="ownerId"
+                        >
                             <option value="">Select owner</option>
                         </select>
                         <button class="light-border" type="submit">

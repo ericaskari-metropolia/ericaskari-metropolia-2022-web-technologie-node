@@ -25,7 +25,12 @@ const validateExpectedFields = (routeName) => {
         const errors = validationResult(req);
         console.log(`${routeName} validation errors:`, errors.array());
         if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array() });
+            return res
+                .status(400)
+                .json({
+                    code: ERROR_CODES.VALIDATION_ERR,
+                    errors: errors.array()
+                });
         } else {
             next();
         }

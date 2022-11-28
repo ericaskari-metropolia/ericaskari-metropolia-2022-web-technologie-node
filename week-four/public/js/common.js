@@ -26,10 +26,64 @@ export const getQueryParam = (param) => {
     return urlParams.get(param);
 };
 
+export const formRawValue = (formFields) => {
+    return Object.entries(formFields)
+        .map(([key, el]) => [key, el?.value ?? null])
+        .reduce((previousValue, [key, value]) => {
+            return {
+                ...previousValue,
+                [key]: value
+            };
+        }, {});
+};
+
+export const formValue = (formFields) => {
+    return Object.entries(formFields)
+        .filter(([_, el]) => !el.disabled)
+        .map(([key, el]) => [key, el?.value ?? null])
+        .reduce((previousValue, [key, value]) => {
+            return {
+                ...previousValue,
+                [key]: value
+            };
+        }, {});
+};
+
+export const normalizeDateValueToField = (date) => {
+    let d = new Date(date);
+    let ye = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(d);
+    let mo = new Intl.DateTimeFormat('en', { month: '2-digit' }).format(d);
+    let da = new Intl.DateTimeFormat('en', { day: '2-digit' }).format(d);
+    return [ye, mo, da].join('-');
+};
+
+export const setFormValue = (formFields, value) => {
+    Object.entries(value).forEach(([key, keyValue]) => {
+        const element = formFields[key];
+        if (element) {
+            if (element instanceof HTMLInputElement) {
+                if (element.type === 'date') {
+                    element.value = normalizeDateValueToField(keyValue);
+                } else if (element.type !== 'file') {
+                    element.value = keyValue;
+                }
+            } else if (element instanceof HTMLSelectElement) {
+                element.value = keyValue;
+            } else if (element instanceof HTMLTextAreaElement) {
+                element.value = keyValue;
+            } else {
+                console.warn(
+                    `Could not find a form field for "${key}" and value of ${keyValue}`
+                );
+            }
+        }
+    });
+};
+
 // get query parameter
 export const handleErrorCode = (
-    el = document.getElementById('page-error'),
-    errorCode = null
+    { code: errorCode, errors },
+    el = document.getElementById('page-error')
 ) => {
     const paramErrorCode = parseInt(getQueryParam('redirect-reason') ?? '-');
     const parsedParamErrorCode = Number.isNaN(paramErrorCode)
@@ -41,6 +95,10 @@ export const handleErrorCode = (
         case ERROR_CODES.EXPIRED_TOKEN:
             el.style.display = 'block';
             el.innerText = 'Your session was expired. Please log in again';
+            break;
+        case ERROR_CODES.VALIDATION_ERR:
+            el.style.display = 'block';
+            el.innerText = `Validation error: ${errors[0].param} ${errors[0].msg}`;
             break;
     }
 };

@@ -11,7 +11,7 @@ router
     .route('/')
     .get(controller.getList)
     .post(
-        uploadService.imageUpload.single('singleImage'),
+        uploadService.imageUpload.single('fileName'),
         body('name').isString(),
         body('birthdate').isDate(),
         body('weight').isNumeric(),

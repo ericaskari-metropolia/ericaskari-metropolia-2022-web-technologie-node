@@ -2,7 +2,11 @@
 import {
     createUserDropdownOptions,
     endpoints,
-    getQueryParam
+    formRawValue,
+    formValue,
+    getQueryParam,
+    handleErrorCode,
+    setFormValue
 } from './common.js';
 
 window.addEventListener('load', () => {
@@ -11,56 +15,49 @@ window.addEventListener('load', () => {
 
     // select existing html elements
     const form = document.querySelector('#modCatForm');
-    const ownerIdSelectEl = document.querySelector('.add-owner');
     const formFields = {
+        id: form.querySelector(`input[name='id']`),
         name: form.querySelector(`input[name='name']`),
-        birthdate: form.querySelector(`input[name='birthdate']`),
         weight: form.querySelector(`input[name='weight']`),
-        singleImage: form.querySelector(`input[name='singleImage']`)
+        ownerId: form.querySelector(`select[name='ownerId']`),
+        fileName: form.querySelector(`input[name='fileName']`),
+        birthdate: form.querySelector(`input[name='birthdate']`)
     };
 
     // get user data for admin check
     const user = JSON.parse(sessionStorage.getItem('user'));
 
     // if user is not admin delete owner selection
-    if (user.role > 0) ownerIdSelectEl.remove();
+    if (user.role > 0) formFields.ownerId.remove();
 
     // submit modify form
     form.addEventListener('submit', async (evt) => {
         evt.preventDefault();
-        const data = serializeJson(form);
-        // remove empty properties
-        for (const [prop, value] of Object.entries(data)) {
-            if (value === '') {
-                delete data[prop];
-            }
-        }
-        const { response, body, error } = await endpoints.editCat(data);
+        const { response, body, error } = await endpoints.editCat(
+            new FormData(form)
+        );
         if (error) {
-            alert(error.message);
+            handleErrorCode(error);
         } else {
             alert(body.message);
+            location.href = 'front.html';
         }
-        location.href = 'front.html';
     });
 
     // start filling the form
     // if admin
     if (user.role === 0) {
+        formFields.ownerId.classList.remove('hidden');
+
         endpoints.getUsers().then(({ error, body, response }) => {
+            console.log(body);
             if (!error) {
-                createUserDropdownOptions(ownerIdSelectEl, body);
+                createUserDropdownOptions(formFields.ownerId, body);
             }
         });
     } else {
         endpoints.getCatById(catId).then(({ response, body, error }) => {
-            const inputs = form.querySelectorAll('input');
-            inputs[0].value = body.name;
-            inputs[1].value = body.birthdate;
-            inputs[2].value = body.weight;
-            if (user.role === 0) {
-                form.querySelector('select').value = body.ownerId;
-            }
+            setFormValue(formFields, body);
         });
     }
 });
